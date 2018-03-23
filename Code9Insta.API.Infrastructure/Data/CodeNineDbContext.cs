@@ -1,13 +1,16 @@
 ﻿using System;
+using Code9Insta.API.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Code9Insta.API.Infrastructure.Identity
+namespace Code9Insta.API.Infrastructure.Data
 {
     public class CodeNineDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
 
-      public CodeNineDbContext(DbContextOptions<CodeNineDbContext> options)
+        public new DbSet<ApplicationUser> Users { get; set; }
+
+        public CodeNineDbContext(DbContextOptions<CodeNineDbContext> options)
           : base(options)
       {
       }

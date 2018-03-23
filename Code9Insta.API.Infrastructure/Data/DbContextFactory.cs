@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Configuration;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Code9Insta.API.Infrastructure.Data
 {
@@ -12,10 +13,11 @@ namespace Code9Insta.API.Infrastructure.Data
     {
         public CodeNineDbContext CreateDbContext(string[] args)
         {
+            
+            var connectionString = "Server=(localdb)\\mssqllocaldb;Database=CodeNineDB;Trusted_Connection=True;";
             var builder = new DbContextOptionsBuilder<CodeNineDbContext>();
+            builder.UseSqlServer(connectionString);
 
-
-           // builder.UseSqlServer();
             return new CodeNineDbContext(builder.Options);
         }
     }

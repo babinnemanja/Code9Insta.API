@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Code9Insta.API.Infrastructure.Identity;
 
 
 namespace Code9Insta.API.Infrastructure.Entities
@@ -13,5 +14,7 @@ namespace Code9Insta.API.Infrastructure.Entities
         public int Likes { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
+        public  ApplicationUser User { get; set; }
+        public Image Image { get; set; }
     }
 }

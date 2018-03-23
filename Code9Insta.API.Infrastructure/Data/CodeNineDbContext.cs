@@ -1,8 +1,10 @@
 ﻿using System;
+using Code9Insta.API.Infrastructure.Entities;
+using Code9Insta.API.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Code9Insta.API.Infrastructure.Identity
+namespace Code9Insta.API.Infrastructure.Data
 {
     public class CodeNineDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
@@ -12,6 +14,10 @@ namespace Code9Insta.API.Infrastructure.Identity
       {
       }
 
+      public DbSet<Post> Posts { get; set; }
+      public DbSet<Comment> Comments { get; set; }
+      public DbSet<Image> Images { get; set; }
+      public DbSet<Profile> Profiles { get; set; }
       protected override void OnModelCreating(ModelBuilder builder)
       {
           base.OnModelCreating(builder);

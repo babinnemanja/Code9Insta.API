@@ -9,7 +9,9 @@ namespace Code9Insta.API.Infrastructure.Data
     public class CodeNineDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
 
-      public CodeNineDbContext(DbContextOptions<CodeNineDbContext> options)
+        public new DbSet<ApplicationUser> Users { get; set; }
+
+        public CodeNineDbContext(DbContextOptions<CodeNineDbContext> options)
           : base(options)
       {
       }

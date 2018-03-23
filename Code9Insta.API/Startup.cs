@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Code9Insta.API.Infrastructure.Data;
 using Code9Insta.API.Infrastructure.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Code9Insta.API
 {
@@ -34,12 +37,26 @@ namespace Code9Insta.API
             var connectionString = Configuration["connectionStrings:CodeNineDBConnectionString"];
             services.AddDbContext<CodeNineDbContext>(o => o.UseSqlServer(connectionString));
 
-            services.AddDbContext<CodeNineDbContext>();
-
             // ===== Add Identity ========
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<CodeNineDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = "code9.com",
+                        ValidAudience = "code9.com",
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(Configuration["SecurityKey"]))
+                    };
+                });
 
             services.AddMvc();
         }
@@ -52,6 +69,7 @@ namespace Code9Insta.API
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseAuthentication();
             app.UseMvc();
 
             dbContext.Database.EnsureCreated();

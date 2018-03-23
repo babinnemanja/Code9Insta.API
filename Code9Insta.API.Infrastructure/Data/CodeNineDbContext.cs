@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Code9Insta.API.Infrastructure.Identity
 {
-    public class AppIdentityDbContext : IdentityDbContext<ApplicationUser>
+    public class CodeNineDbContext : IdentityDbContext
     {
 
-      public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options)
+      public CodeNineDbContext(DbContextOptions<CodeNineDbContext> options)
           : base(options)
       {
       }

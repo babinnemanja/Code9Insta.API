@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Code9Insta.API.Infrastructure.Data;
 using Code9Insta.API.Infrastructure.Identity;
+using Code9Insta.API.Infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -57,6 +58,9 @@ namespace Code9Insta.API
                             Encoding.UTF8.GetBytes(Configuration["SecurityKey"]))
                     };
                 });
+
+            // register the repository
+            services.AddScoped<IDataRepository, DataRepository>();
 
             services.AddMvc();
         }

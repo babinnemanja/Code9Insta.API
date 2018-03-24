@@ -29,7 +29,8 @@ namespace Code9Insta.API.Infrastructure.Migrations
 
                     b.Property<Guid>("PostId");
 
-                    b.Property<string>("Text");
+                    b.Property<string>("Text")
+                        .IsRequired();
 
                     b.Property<Guid>("UserId");
 
@@ -83,7 +84,8 @@ namespace Code9Insta.API.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Handle");
+                    b.Property<string>("Handle")
+                        .IsRequired();
 
                     b.Property<bool>("IsPublic");
 

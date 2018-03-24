@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using System;
-using System.Collections.Generic;
 
 namespace Code9Insta.API.Infrastructure.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -171,7 +170,7 @@ namespace Code9Insta.API.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Handle = table.Column<string>(nullable: true),
+                    Handle = table.Column<string>(nullable: false),
                     IsPublic = table.Column<bool>(nullable: false),
                     UserId = table.Column<Guid>(nullable: false)
                 },
@@ -227,7 +226,7 @@ namespace Code9Insta.API.Infrastructure.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     PostId = table.Column<Guid>(nullable: false),
-                    Text = table.Column<string>(nullable: true),
+                    Text = table.Column<string>(nullable: false),
                     UserId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>

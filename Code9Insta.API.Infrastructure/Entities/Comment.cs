@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.ComponentModel.DataAnnotations;
 
 namespace Code9Insta.API.Infrastructure.Entities
 {
@@ -9,6 +9,7 @@ namespace Code9Insta.API.Infrastructure.Entities
         public Guid UserId { get; set; }
         public Guid PostId { get; set; }
         public DateTime CreatedOn { get; set; }
+        [Required]
         public string Text { get; set; }
     }
 }

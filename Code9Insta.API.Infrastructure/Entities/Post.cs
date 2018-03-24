@@ -14,7 +14,7 @@ namespace Code9Insta.API.Infrastructure.Entities
         public int Likes { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
-        public  ApplicationUser User { get; set; }
+        public ApplicationUser User { get; set; }
         public Image Image { get; set; }
     }
 }

@@ -11,8 +11,8 @@ using System;
 namespace Code9Insta.API.Infrastructure.Migrations
 {
     [DbContext(typeof(CodeNineDbContext))]
-    [Migration("20180324114739_initial")]
-    partial class initial
+    [Migration("20180324143008_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,7 +30,8 @@ namespace Code9Insta.API.Infrastructure.Migrations
 
                     b.Property<Guid>("PostId");
 
-                    b.Property<string>("Text");
+                    b.Property<string>("Text")
+                        .IsRequired();
 
                     b.Property<Guid>("UserId");
 
@@ -84,7 +85,8 @@ namespace Code9Insta.API.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Handle");
+                    b.Property<string>("Handle")
+                        .IsRequired();
 
                     b.Property<bool>("IsPublic");
 

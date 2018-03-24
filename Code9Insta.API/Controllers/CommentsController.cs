@@ -1,4 +1,4 @@
-﻿using Code9Insta.API.Infrastructure.Repository;
+﻿using Code9Insta.API.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Code9Insta.API.Controllers

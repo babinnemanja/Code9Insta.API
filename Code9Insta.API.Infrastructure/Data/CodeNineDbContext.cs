@@ -9,8 +9,6 @@ namespace Code9Insta.API.Infrastructure.Data
     public class CodeNineDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
 
-        public new DbSet<ApplicationUser> Users { get; set; }
-
         public CodeNineDbContext(DbContextOptions<CodeNineDbContext> options)
           : base(options)
       {
@@ -20,7 +18,9 @@ namespace Code9Insta.API.Infrastructure.Data
       public DbSet<Comment> Comments { get; set; }
       public DbSet<Image> Images { get; set; }
       public DbSet<Profile> Profiles { get; set; }
-      protected override void OnModelCreating(ModelBuilder builder)
+      public new DbSet<ApplicationUser> Users { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
       {
           base.OnModelCreating(builder);
           // Customize the ASP.NET Identity model and override the defaults if needed.

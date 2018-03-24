@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Code9Insta.API.Infrastructure.Data;
 using Code9Insta.API.Infrastructure.Entities;
+using Code9Insta.API.Infrastructure.Interfaces;
 
 namespace Code9Insta.API.Infrastructure.Repository
 {

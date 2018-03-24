@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using Code9Insta.API.Infrastructure.Data;
 using Code9Insta.API.Infrastructure.Identity;
 using Code9Insta.API.Infrastructure.Repository;
@@ -13,9 +9,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Code9Insta.API.Infrastructure.Interfaces;
 
 namespace Code9Insta.API
 {
@@ -61,6 +56,8 @@ namespace Code9Insta.API
 
             // register the repository
             services.AddScoped<IDataRepository, DataRepository>();
+            services.AddScoped<IValidate, ValidateRepository>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
 
             services.AddMvc();
         }

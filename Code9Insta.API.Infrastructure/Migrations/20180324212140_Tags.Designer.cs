@@ -11,9 +11,10 @@ using System;
 namespace Code9Insta.API.Infrastructure.Migrations
 {
     [DbContext(typeof(CodeNineDbContext))]
-    partial class CodeNineDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180324212140_Tags")]
+    partial class Tags
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

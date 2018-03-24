@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Code9Insta.API.Infrastructure.Repository
+namespace Code9Insta.API.Infrastructure.Interfaces
 {
     public interface IDataRepository
     {

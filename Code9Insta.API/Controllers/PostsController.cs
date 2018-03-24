@@ -1,4 +1,5 @@
 ﻿using System;
+using Code9Insta.API.Infrastructure.Interfaces;
 using System.IO;
 using System.Threading.Tasks;
 using Code9Insta.API.Core.DTO;

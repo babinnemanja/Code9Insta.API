@@ -4,6 +4,7 @@ using System.Linq;
 using Code9Insta.API.Core.DTO;
 using Code9Insta.API.Infrastructure.Data;
 using Code9Insta.API.Infrastructure.Entities;
+using Code9Insta.API.Infrastructure.Interfaces;
 
 namespace Code9Insta.API.Infrastructure.Repository
 {

@@ -1,4 +1,4 @@
-﻿namespace Code9Insta.API.Core.Interfaces
+﻿namespace Code9Insta.API.Infrastructure.Interfaces
 {
     public interface IValidate
     {

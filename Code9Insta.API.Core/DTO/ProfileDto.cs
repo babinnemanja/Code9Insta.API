@@ -4,7 +4,10 @@ using System.Text;
 
 namespace Code9Insta.API.Core.DTO
 {
-    class ProfileDto
+    public class ProfileDto
     {
+        public string Handle { get; set; }
+        public bool IsPublic { get; set; }
+        public AccountDto User { get; set; }
     }
 }

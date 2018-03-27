@@ -11,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Code9Insta.API.Infrastructure.Interfaces;
+using Code9Insta.API.Core.DTO;
+using Code9Insta.API.Infrastructure.Entities;
 
 namespace Code9Insta.API
 {
@@ -57,7 +59,13 @@ namespace Code9Insta.API
             // register the repository
             services.AddScoped<IDataRepository, DataRepository>();
             services.AddScoped<IValidate, ValidateRepository>();
-            services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IProfileRepository, ProfileRepository>();
+
+            //AutoMapper configuration
+            AutoMapper.Mapper.Initialize(conf => {
+                conf.CreateMap<ProfileDto, Profile>();
+                conf.CreateMap<AccountDto, ApplicationUser>();
+            });
 
             services.AddMvc();
         }

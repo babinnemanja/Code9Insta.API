@@ -19,27 +19,58 @@ namespace Code9Insta.API.Infrastructure.Repository
 
         public void AddPostForUser(Guid userId, PostDto post)
         {
-          
-           
+            var image = new Image
+            {
+                Data = post.ImageData
+            };
+
+            var newPost = new Post
+            {          
+                Image = image,
+                UserId = post.UserId,
+                CreatedOn = DateTime.UtcNow,
+                Description = post.Description,
+                PostTags = new List<PostTag>(),
+                
+            };
+
+            foreach (var tag in post.Tags)
+            {
+                var newTag = new Tag
+                {
+                    Id = post.Id,
+                    Text = tag
+                };
+
+                _context.Tags.Add(newTag);
+
+                newPost.PostTags.Add(new PostTag
+                {
+                    Post = newPost,
+                    Tag = newTag
+                });
+
+                
+            }
+
+            _context.Posts.Add(newPost);
+
+                    
+        }
+
+        public Post GetPostForUser(Guid userId, Guid id)
+        {
+            return _context.Posts.SingleOrDefault(p => p.Id == id && p.UserId == userId);
+        }
+
+        public void DeletePost(Post post)
+        {
+            _context.Remove(post);
         }
 
         public IEnumerable<Post> GetPosts()
         {
-            return new List<Post>
-            {
-                new Post
-                {
-                    Id = Guid.NewGuid(),
-                    Likes = 3,
-                    UserId = Guid.NewGuid()
-                },
-                 new Post
-                {
-                    Id = Guid.NewGuid(),
-                    Likes = 3,
-                    UserId = Guid.NewGuid()
-                }
-            };
+            return _context.Posts.AsEnumerable();
         }
 
         public bool UserExists(Guid userId)

@@ -55,7 +55,9 @@ namespace Code9Insta.API.Controllers
 
             var post = new PostDto
             {
-                UserId = model.UserId
+                UserId = model.UserId,
+                Tags = model.Tags,
+                Description = model.Description                
             };
 
             using (var memoryStream = new MemoryStream())
@@ -86,8 +88,28 @@ namespace Code9Insta.API.Controllers
         
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(Guid userId, Guid id)
         {
+            if (!_repository.UserExists(userId))
+            {
+                return NotFound();
+            }
+
+            var post = _repository.GetPostForUser(userId, id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            _repository.DeletePost(post);
+
+            if (!_repository.Save())
+            {
+                throw new Exception($"Deleting post {id} for user {userId} failed on save.");
+            }
+
+           
+            return NoContent();
         }
     }
 }

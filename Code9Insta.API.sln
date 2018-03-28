@@ -5,9 +5,11 @@ VisualStudioVersion = 15.0.27428.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Code9Insta.API", "Code9Insta.API\Code9Insta.API.csproj", "{568A6A29-CB7A-4A0D-B78A-8B1AB9E693A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Code9Insta.API.Infrastructure", "Code9Insta.API.Infrastructure\Code9Insta.API.Infrastructure.csproj", "{A1281C6C-DB99-4749-A527-8A01C1E613A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Code9Insta.API.Infrastructure", "Code9Insta.API.Infrastructure\Code9Insta.API.Infrastructure.csproj", "{A1281C6C-DB99-4749-A527-8A01C1E613A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Code9Insta.API.Core", "Code9Insta.API.Core\Code9Insta.API.Core.csproj", "{422ACF54-175F-4ABB-BB30-B37B0390BF66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Code9Insta.API.Core", "Code9Insta.API.Core\Code9Insta.API.Core.csproj", "{422ACF54-175F-4ABB-BB30-B37B0390BF66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Code9Insta.API.Helpers", "Code9Insta.API.Helpers\Code9Insta.API.Helpers.csproj", "{037384A8-A6D0-462B-A44C-7CE965DB40C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{422ACF54-175F-4ABB-BB30-B37B0390BF66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{422ACF54-175F-4ABB-BB30-B37B0390BF66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{422ACF54-175F-4ABB-BB30-B37B0390BF66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{037384A8-A6D0-462B-A44C-7CE965DB40C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{037384A8-A6D0-462B-A44C-7CE965DB40C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{037384A8-A6D0-462B-A44C-7CE965DB40C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{037384A8-A6D0-462B-A44C-7CE965DB40C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

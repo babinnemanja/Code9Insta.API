@@ -5,6 +5,7 @@ using Code9Insta.API.Core.DTO;
 using Code9Insta.API.Infrastructure.Data;
 using Code9Insta.API.Infrastructure.Entities;
 using Code9Insta.API.Infrastructure.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Code9Insta.API.Infrastructure.Repository
 {
@@ -63,14 +64,37 @@ namespace Code9Insta.API.Infrastructure.Repository
             return _context.Posts.SingleOrDefault(p => p.Id == id && p.UserId == userId);
         }
 
+        public Post GetPostById(Guid id)
+        {
+            return _context.Posts
+                .Include(p => p.Image)
+                .Include(p => p.User)
+                .Include(p => p.Comments)
+                .Include(e => e.PostTags)
+                    .ThenInclude(e => e.Tag)
+                .SingleOrDefault(p => p.Id == id);
+        }
+
         public void DeletePost(Post post)
         {
             _context.Remove(post);
         }
 
+        public void LikePost(Post post)
+        {
+            post.Likes++;
+        }
+
         public IEnumerable<Post> GetPosts()
         {
-            return _context.Posts.AsEnumerable();
+            var posts = _context.Posts
+                .Include(p => p.Image)
+                .Include(p => p.User)
+                .Include(p => p.Comments)
+                .Include(e => e.PostTags)
+                    .ThenInclude(e => e.Tag)
+                    .ToList();
+            return posts;
         }
 
         public bool UserExists(Guid userId)
@@ -88,6 +112,6 @@ namespace Code9Insta.API.Infrastructure.Repository
             return (_context.SaveChanges() >= 0);
         }
 
-       
+        
     }
 }

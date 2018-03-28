@@ -7,6 +7,8 @@ using Code9Insta.API.Infrastructure.Entities;
 using Code9Insta.API.Infrastructure.Repository;
 using Code9Insta.API.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Code9Insta.API.Controllers
 {
@@ -24,14 +26,25 @@ namespace Code9Insta.API.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_repository.GetPosts());
+            var posts = _repository.GetPosts();
+          
+            var result = AutoMapper.Mapper.Map<IEnumerable<PostDto>>(posts);
+
+            return Ok(result);
         }
 
         // GET: api/Posts/5
         [HttpGet("{id}", Name = "Get")]
-        public string Get(Guid id)
+        public IActionResult Get(Guid id)
         {
-            return "value";
+            var post = _repository.GetPostById(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            
+            var postDto = AutoMapper.Mapper.Map<PostDto>(post);
+            return Ok(postDto);
         }
         
         // POST: api/Posts
@@ -81,9 +94,23 @@ namespace Code9Insta.API.Controllers
         }
         
         // PUT: api/Posts/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        [HttpPut("{id}", Name ="LikePost")]
+        public IActionResult Put(Guid id)
         {
+            var post = _repository.GetPostById(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            _repository.LikePost(post);
+
+            if (!_repository.Save())
+            {
+                throw new Exception($"Updating post likes {id} failed on save.");
+            }
+
+            return NoContent();
         }
         
         // DELETE: api/ApiWithActions/5

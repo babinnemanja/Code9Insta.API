@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Code9Insta.API.Infrastructure.Interfaces;
 using Code9Insta.API.Core.DTO;
 using Code9Insta.API.Infrastructure.Entities;
+using System.Linq;
 
 namespace Code9Insta.API
 {
@@ -62,9 +63,15 @@ namespace Code9Insta.API
             services.AddScoped<IProfileRepository, ProfileRepository>();
 
             //AutoMapper configuration
-            AutoMapper.Mapper.Initialize(conf => {
+            AutoMapper.Mapper.Initialize(conf =>
+            {
                 conf.CreateMap<ProfileDto, Profile>();
                 conf.CreateMap<AccountDto, ApplicationUser>();
+                conf.CreateMap<Post, PostDto>()
+                  .ForMember(dest => dest.ImageData, opt => opt.MapFrom(src => src.Image.Data))
+                  .ForMember(dest => dest.Tags, opt => opt.MapFrom(src =>
+                    src.PostTags.Select(pt => pt.Tag.Text).ToList()));
+                conf.CreateMap<CommentDto, Comment>();
             });
 
             services.AddMvc();

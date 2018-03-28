@@ -2,6 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Code9Insta.API.Helpers.Interfaces;
 using Code9Insta.API.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,20 +14,28 @@ namespace Code9Insta.API.Controllers
     [Route("api/[controller]")]
     public class TokensController : Controller
     {
-        private readonly IValidate _validateRepository;
+        private readonly IValidateRepository _validateRepository;
+        private readonly IProfileRepository _profileRepository;
         private readonly IConfiguration _configuration;
+        private readonly IPasswordManager _passwordManager;
 
-        public TokensController(IValidate validateRepository, IConfiguration configuration)
+        public TokensController(IValidateRepository validateRepository, IConfiguration configuration, IProfileRepository profileRepository, IPasswordManager passwordManager)
         {
             _validateRepository = validateRepository;
+            _profileRepository = profileRepository;
             _configuration = configuration;
+            _passwordManager = passwordManager;
         }
 
         [AllowAnonymous]
         [HttpPost]
         public IActionResult RequestToken(string userName, string password)
         {
-            if (!_validateRepository.ValidateLogin(userName, password))
+            //hash pasword
+            var salt = _profileRepository.GetSaltByUserName(userName);
+            var passwordHash = _passwordManager.GetPasswordHash(password, salt);
+
+            if (!_validateRepository.ValidateLogin(userName, passwordHash))
                 return BadRequest("Could not verify username and password");
 
             var claims = new[]

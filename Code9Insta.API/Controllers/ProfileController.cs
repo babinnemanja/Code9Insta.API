@@ -1,4 +1,5 @@
 ﻿using Code9Insta.API.Core.DTO;
+using Code9Insta.API.Helpers.Interfaces;
 using Code9Insta.API.Infrastructure.Entities;
 using Code9Insta.API.Infrastructure.Identity;
 using Code9Insta.API.Infrastructure.Interfaces;
@@ -12,18 +13,32 @@ namespace Code9Insta.API.Controllers
     public class ProfileController : Controller
     {
         private readonly IProfileRepository _profileRepository;
+        private readonly IValidateRepository _validateRepository;
+        private readonly IPasswordManager _passwordManager;
 
-        public ProfileController(IProfileRepository profileRepository)
+        public ProfileController(IProfileRepository profileRepository, IValidateRepository validateRepository, IPasswordManager passwordManager)
         {
             _profileRepository = profileRepository;
+            _validateRepository = validateRepository;
+            _passwordManager = passwordManager;
         }
 
         [AllowAnonymous]
         [HttpPost]
         public IActionResult CreateProfile([FromBody]ProfileDto profile)
         {
+            if(!_validateRepository.IsUserNameHandleUnique(profile.User.UserName, profile.Handle))
+            {
+                return StatusCode(409, "User allready exists"); 
+            }
 
-            _profileRepository.CreateProfile(AutoMapper.Mapper.Map<Profile>(profile));
+            var prof = AutoMapper.Mapper.Map<Profile>(profile);
+            var salt = new byte[128 / 8];
+
+            prof.User.PasswordHash = _passwordManager.GetPasswordHash(profile.User.Password, salt);
+            prof.User.Salt = salt;
+
+            _profileRepository.CreateProfile(prof);
 
             if(!_profileRepository.Save())
             {

@@ -27,9 +27,15 @@ namespace Code9Insta.API.Infrastructure.Repository
            return _context.Profiles.FirstOrDefault(f => f.Id == profileId);
         }
 
+        public byte[] GetSaltByUserName(string userName)
+        {
+            return _context.Users.FirstOrDefault(f => f.UserName == userName).Salt;
+        }
+
         public bool Save()
         {
             return (_context.SaveChanges() >= 0);
         }
+
     }
 }

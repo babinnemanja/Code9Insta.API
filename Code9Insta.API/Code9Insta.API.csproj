@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Code9Insta.API.Core\Code9Insta.API.Core.csproj" />
+    <ProjectReference Include="..\Code9Insta.API.Helpers\Code9Insta.API.Helpers.csproj" />
     <ProjectReference Include="..\Code9Insta.API.Infrastructure\Code9Insta.API.Infrastructure.csproj" />
   </ItemGroup>
 

@@ -13,6 +13,8 @@ using Microsoft.IdentityModel.Tokens;
 using Code9Insta.API.Infrastructure.Interfaces;
 using Code9Insta.API.Core.DTO;
 using Code9Insta.API.Infrastructure.Entities;
+using Code9Insta.API.Helpers.Interfaces;
+using Code9Insta.API.Helpers;
 
 namespace Code9Insta.API
 {
@@ -58,8 +60,11 @@ namespace Code9Insta.API
 
             // register the repository
             services.AddScoped<IDataRepository, DataRepository>();
-            services.AddScoped<IValidate, ValidateRepository>();
+            services.AddScoped<IValidateRepository, ValidateRepository>();
             services.AddScoped<IProfileRepository, ProfileRepository>();
+
+            //register helpers
+            services.AddScoped<IPasswordManager, PasswordManager>();
 
             //AutoMapper configuration
             AutoMapper.Mapper.Initialize(conf => {

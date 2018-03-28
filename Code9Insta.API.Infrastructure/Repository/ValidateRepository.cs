@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Code9Insta.API.Infrastructure.Repository
 {
-    public class ValidateRepository : IValidate
+    public class ValidateRepository : IValidateRepository
     {
         private readonly CodeNineDbContext _context;
 
@@ -16,6 +16,11 @@ namespace Code9Insta.API.Infrastructure.Repository
         public bool ValidateLogin(string userName, string password)
         {
             return _context.Users.Any(a => a.UserName == userName && a.PasswordHash == password);
+        }
+
+        public bool IsUserNameHandleUnique(string userName, string handle)
+        {
+            return _context.Users.All(a => a.UserName != userName) && _context.Profiles.All(a => a.Handle != handle);
         }
     }
 }

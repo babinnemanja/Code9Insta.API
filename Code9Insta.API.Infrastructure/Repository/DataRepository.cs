@@ -97,6 +97,21 @@ namespace Code9Insta.API.Infrastructure.Repository
             return posts;
         }
 
+        public IEnumerable<Post> GetPage(int pageNumber, int pageSize)
+        {
+            var posts = _context.Posts
+               .Include(p => p.Image)
+               .Include(p => p.User)
+               .Include(p => p.Comments)
+               .Include(e => e.PostTags)
+                   .ThenInclude(e => e.Tag)
+                   .Skip(pageNumber * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+
+            return posts;
+        }
+
         public bool UserExists(Guid userId)
         {
             return _context.Users.Any(u => u.Id == userId);
@@ -112,6 +127,6 @@ namespace Code9Insta.API.Infrastructure.Repository
             return (_context.SaveChanges() >= 0);
         }
 
-        
+     
     }
 }

@@ -9,6 +9,7 @@ namespace Code9Insta.API.Infrastructure.Interfaces
     public interface IDataRepository
     {
         IEnumerable<Post> GetPosts();
+        IEnumerable<Post> GetPage(int pageNumber, int pageSize);
         bool UserExists(Guid userId);
         bool PostExists(Guid userId);
         void AddPostForUser(Guid userId, PostDto post);

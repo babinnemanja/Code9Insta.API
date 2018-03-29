@@ -3,12 +3,11 @@ using Code9Insta.API.Infrastructure.Interfaces;
 using System.IO;
 using System.Threading.Tasks;
 using Code9Insta.API.Core.DTO;
-using Code9Insta.API.Infrastructure.Entities;
-using Code9Insta.API.Infrastructure.Repository;
 using Code9Insta.API.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Collections.Generic;
+using Code9Insta.API.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace Code9Insta.API.Controllers
 {
@@ -20,21 +19,32 @@ namespace Code9Insta.API.Controllers
 
         public PostsController(IDataRepository repository)
         {
-            _repository = repository;   
+            _repository = repository;
         }
         // GET: api/Posts
         [HttpGet]
-        public IActionResult Get()
+        [Route("GetAll")]
+        public IActionResult GetAllPosts()
         {
             var posts = _repository.GetPosts();
-          
+         
+            var result = AutoMapper.Mapper.Map<IEnumerable<PostDto>>(posts);
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public IActionResult Get(int pageNumber, int pageSize)
+        {
+            var posts = _repository.GetPage(pageNumber, pageSize);
+
             var result = AutoMapper.Mapper.Map<IEnumerable<PostDto>>(posts);
 
             return Ok(result);
         }
 
         // GET: api/Posts/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}")]
         public IActionResult Get(Guid id)
         {
             var post = _repository.GetPostById(id);
@@ -113,7 +123,7 @@ namespace Code9Insta.API.Controllers
             return NoContent();
         }
         
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/Posts/5
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid userId, Guid id)
         {

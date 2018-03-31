@@ -42,21 +42,28 @@ namespace Code9Insta.API.Infrastructure.Repository
                     Id = post.Id,
                     Text = tag
                 };
-
-                _context.Tags.Add(newTag);
-
+           
                 newPost.PostTags.Add(new PostTag
                 {
                     Post = newPost,
                     Tag = newTag
                 });
-
                 
             }
 
             _context.Posts.Add(newPost);
 
                     
+        }
+
+        public void EditPost(Post post, string description, string[] tags)
+        {
+            post.Description = description;
+
+            foreach (var tag in tags)
+            {
+
+            }
         }
 
         public Post GetPostForUser(Guid userId, Guid id)
@@ -68,6 +75,7 @@ namespace Code9Insta.API.Infrastructure.Repository
         {
             return _context.Posts
                 .Include(p => p.Image)
+                .Include(p => p.UserLikes)
                 .Include(p => p.User)
                 .Include(p => p.Comments)
                 .Include(e => e.PostTags)
@@ -80,9 +88,26 @@ namespace Code9Insta.API.Infrastructure.Repository
             _context.Remove(post);
         }
 
-        public void LikePost(Post post)
+        public void LikePost(Post post, Guid userId)
         {
-            post.Likes++;
+            var like = _context.UserLikes.SingleOrDefault(pl => pl.UserId == userId && pl.PostId == post.Id);
+            if (like == null)
+            {
+                var newLike = new UserLike
+                {
+                    PostId = post.Id,
+                    UserId = userId
+                };
+               
+                post.UserLikes = post.UserLikes ?? new List<UserLike>();
+
+                post.UserLikes.Add(newLike);
+                
+            }
+            else
+            {
+                _context.UserLikes.Remove(like);
+            }
         }
 
         public IEnumerable<Post> GetPosts()
@@ -127,6 +152,6 @@ namespace Code9Insta.API.Infrastructure.Repository
             return (_context.SaveChanges() >= 0);
         }
 
-     
+       
     }
 }

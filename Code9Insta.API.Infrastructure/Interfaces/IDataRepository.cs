@@ -18,6 +18,7 @@ namespace Code9Insta.API.Infrastructure.Interfaces
         bool Save();
         Post GetPostForUser(Guid userId, Guid id);
         Post GetPostById(Guid id);
-        void LikePost(Post post);
+        void LikePost(Post post, Guid userId);
+        void EditPost(Post post, string description, string[] tags);
     }
 }

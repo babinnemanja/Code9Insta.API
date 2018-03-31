@@ -6,8 +6,7 @@ using Code9Insta.API.Core.DTO;
 using Code9Insta.API.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using Code9Insta.API.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity;
+
 
 namespace Code9Insta.API.Controllers
 {
@@ -44,7 +43,7 @@ namespace Code9Insta.API.Controllers
         }
 
         // GET: api/Posts/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetPost")]
         public IActionResult Get(Guid id)
         {
             var post = _repository.GetPostById(id);
@@ -53,6 +52,7 @@ namespace Code9Insta.API.Controllers
                 return NotFound();
             }
             
+            //ToDo - calculate if post is liked by the current user
             var postDto = AutoMapper.Mapper.Map<PostDto>(post);
             return Ok(postDto);
         }
@@ -97,24 +97,42 @@ namespace Code9Insta.API.Controllers
             }
 
 
-            return CreatedAtRoute("GetPostForUser",
+            return CreatedAtRoute("GetPost",
                 new { userId = model.UserId, id = post.Id },
                 post);
 
         }
-        
-        // PUT: api/Posts/5
-        [HttpPut("{id}", Name ="LikePost")]
-        public IActionResult Put(Guid id)
+
+        [HttpPut("{id}", Name = "EditPost")]
+        [Route("{id}")]
+        public IActionResult Edit(EditPostViewModel model, Guid id)
         {
+            if (model == null)
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_repository.UserExists(model.UserId))
+            {
+                return NotFound();
+            }
+
             var post = _repository.GetPostById(id);
             if (post == null)
             {
                 return NotFound();
             }
+            else
+            {
 
-            _repository.LikePost(post);
+                _repository.EditPost(post, model.Description, model.Tags);
 
+            }
             if (!_repository.Save())
             {
                 throw new Exception($"Updating post likes {id} failed on save.");
@@ -122,7 +140,32 @@ namespace Code9Insta.API.Controllers
 
             return NoContent();
         }
-        
+
+        // PUT: api/Posts/5
+        [HttpPut("{id}/reactToPost", Name ="ReactToPost")]
+        [Route("{id}/reactToPost")]
+        public IActionResult Put(Guid userId, Guid id)
+        {
+            var post = _repository.GetPostById(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+
+            _repository.LikePost(post, userId);
+
+            }
+            if (!_repository.Save())
+            {
+                throw new Exception($"Updating post likes {id} failed on save.");
+            }
+
+            return NoContent();
+        }
+
+       
         // DELETE: api/Posts/5
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid userId, Guid id)

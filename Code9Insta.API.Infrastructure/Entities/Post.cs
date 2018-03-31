@@ -11,13 +11,14 @@ namespace Code9Insta.API.Infrastructure.Entities
         public Guid ImageId { get; set; }
         public Guid UserId { get; set; }
         public DateTime CreatedOn { get; set; }
-        public int Likes { get; set; }
         public string Description { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
         public ICollection<PostTag> PostTags { get; set; }
+        public ICollection<UserLike> UserLikes { get; set; }
 
         public ApplicationUser User { get; set; }
         public Image Image { get; set; }
     }
+
 }

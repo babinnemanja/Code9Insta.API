@@ -20,6 +20,7 @@ namespace Code9Insta.API.Infrastructure.Data
       public DbSet<Profile> Profiles { get; set; }
       public new DbSet<ApplicationUser> Users { get; set; }
       public DbSet<Tag> Tags { get; set; }
+      public DbSet<UserLike> UserLikes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
       {
@@ -39,9 +40,8 @@ namespace Code9Insta.API.Infrastructure.Data
             builder.Entity<PostTag>()
                 .HasOne(pt => pt.Tag)
                 .WithMany(t => t.PostTags)
-                .HasForeignKey(pt => pt.TagId);
+                .HasForeignKey(pt => pt.TagId); 
         }
-
 
     }
         

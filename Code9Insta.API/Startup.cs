@@ -73,6 +73,7 @@ namespace Code9Insta.API
                 conf.CreateMap<ProfileDto, Profile>();
                 conf.CreateMap<AccountDto, ApplicationUser>();
                 conf.CreateMap<Post, PostDto>()
+                  .ForMember(dest => dest.Likes, opt => opt.MapFrom(src => src.UserLikes.Count()))
                   .ForMember(dest => dest.ImageData, opt => opt.MapFrom(src => src.Image.Data))
                   .ForMember(dest => dest.Tags, opt => opt.MapFrom(src =>
                     src.PostTags.Select(pt => pt.Tag.Text).ToList()));

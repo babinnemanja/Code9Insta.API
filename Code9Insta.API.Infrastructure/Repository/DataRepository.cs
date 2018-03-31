@@ -39,7 +39,6 @@ namespace Code9Insta.API.Infrastructure.Repository
             {
                 var newTag = new Tag
                 {
-                    Id = post.Id,
                     Text = tag
                 };
            
@@ -60,9 +59,30 @@ namespace Code9Insta.API.Infrastructure.Repository
         {
             post.Description = description;
 
+            //clear removed tags
+            var tagsForRemoval = post.PostTags.Where(pt => tags.All(x => x != pt.Tag.Text)).ToList();
+
+            foreach (var item in tagsForRemoval)
+            {
+                post.PostTags.Remove(item);
+            }
+
+            //add new tags
             foreach (var tag in tags)
             {
+                if(!post.PostTags.Any(t => t.Tag.Text == tag))
+                {
+                    var newTag = new Tag
+                    {                       
+                        Text = tag
+                    };
 
+                    post.PostTags.Add(new PostTag
+                    {
+                        Post = post,
+                        Tag = newTag
+                    });
+                }
             }
         }
 
@@ -88,7 +108,7 @@ namespace Code9Insta.API.Infrastructure.Repository
             _context.Remove(post);
         }
 
-        public void LikePost(Post post, Guid userId)
+        public void ReactToPost(Post post, Guid userId)
         {
             var like = _context.UserLikes.SingleOrDefault(pl => pl.UserId == userId && pl.PostId == post.Id);
             if (like == null)
@@ -130,7 +150,7 @@ namespace Code9Insta.API.Infrastructure.Repository
                .Include(p => p.Comments)
                .Include(e => e.PostTags)
                    .ThenInclude(e => e.Tag)
-                   .Skip(pageNumber * pageSize)
+                   .Skip((pageNumber - 1) * pageSize)
                    .Take(pageSize)
                    .ToList();
 

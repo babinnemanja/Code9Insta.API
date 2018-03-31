@@ -33,7 +33,7 @@ namespace Code9Insta.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get(int pageNumber, int pageSize)
+        public IActionResult Get(int pageNumber = 1, int pageSize = 10)
         {
             var posts = _repository.GetPage(pageNumber, pageSize);
 
@@ -154,7 +154,7 @@ namespace Code9Insta.API.Controllers
             else
             {
 
-            _repository.LikePost(post, userId);
+            _repository.ReactToPost(post, userId);
 
             }
             if (!_repository.Save())

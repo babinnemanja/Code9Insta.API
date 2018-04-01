@@ -13,6 +13,7 @@ namespace Code9Insta.API.Core.DTO
         public byte[] ImageData { get; set; }
         public string[] Tags { get; set; }
         public string Description { get; set; }
+        public string CreatedBy { get; set; }
 
         public ICollection<CommentDto> Comments { get; set; }
       

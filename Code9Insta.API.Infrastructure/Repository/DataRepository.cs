@@ -18,7 +18,7 @@ namespace Code9Insta.API.Infrastructure.Repository
             _context = context;
         }
 
-        public void AddPostForUser(Guid userId, PostDto post)
+        public void CreatePost(Guid userId, PostDto post)
         {
             var image = new Image
             {
@@ -26,49 +26,81 @@ namespace Code9Insta.API.Infrastructure.Repository
             };
 
             var newPost = new Post
-            {          
+            {
                 Image = image,
                 UserId = post.UserId,
                 CreatedOn = DateTime.UtcNow,
                 Description = post.Description,
                 PostTags = new List<PostTag>(),
-                
+
             };
 
             foreach (var tag in post.Tags)
             {
                 var newTag = new Tag
                 {
-                    Id = post.Id,
                     Text = tag
                 };
-           
+
                 newPost.PostTags.Add(new PostTag
                 {
                     Post = newPost,
                     Tag = newTag
                 });
-                
+
             }
 
             _context.Posts.Add(newPost);
 
-                    
+
         }
 
         public void EditPost(Post post, string description, string[] tags)
         {
             post.Description = description;
 
+            //clear removed tags
+            var tagsForRemoval = post.PostTags.Where(pt => tags.All(x => x != pt.Tag.Text)).ToList();
+
+            foreach (var item in tagsForRemoval)
+            {
+                post.PostTags.Remove(item);
+            }
+
+            //add new tags
             foreach (var tag in tags)
             {
+                if (!post.PostTags.Any(t => t.Tag.Text == tag))
+                {
+                    var newTag = new Tag
+                    {
+                        Text = tag
+                    };
 
+                    post.PostTags.Add(new PostTag
+                    {
+                        Post = post,
+                        Tag = newTag
+                    });
+                }
             }
         }
 
         public Post GetPostForUser(Guid userId, Guid id)
         {
             return _context.Posts.SingleOrDefault(p => p.Id == id && p.UserId == userId);
+        }
+
+        public IEnumerable<Post> GetPostsForUser(Guid userId)
+        {
+            return _context.Posts.Where(p => p.UserId == userId)
+                .Include(p => p.Image)
+                .Include(p => p.User)
+                .Include(p => p.Comments)
+                .Include(e => e.PostTags)
+                   .ThenInclude(e => e.Tag)
+                .OrderByDescending(p => p.CreatedOn)
+                .ToList();
         }
 
         public Post GetPostById(Guid id)
@@ -88,7 +120,7 @@ namespace Code9Insta.API.Infrastructure.Repository
             _context.Remove(post);
         }
 
-        public void LikePost(Post post, Guid userId)
+        public void ReactToPost(Post post, Guid userId)
         {
             var like = _context.UserLikes.SingleOrDefault(pl => pl.UserId == userId && pl.PostId == post.Id);
             if (like == null)
@@ -98,11 +130,11 @@ namespace Code9Insta.API.Infrastructure.Repository
                     PostId = post.Id,
                     UserId = userId
                 };
-               
+
                 post.UserLikes = post.UserLikes ?? new List<UserLike>();
 
                 post.UserLikes.Add(newLike);
-                
+
             }
             else
             {
@@ -110,31 +142,45 @@ namespace Code9Insta.API.Infrastructure.Repository
             }
         }
 
-        public IEnumerable<Post> GetPosts()
+        public IEnumerable<Post> GetPosts(string searchString)
         {
-            var posts = _context.Posts
+            var query = _context.Posts
                 .Include(p => p.Image)
                 .Include(p => p.User)
                 .Include(p => p.Comments)
                 .Include(e => e.PostTags)
-                    .ThenInclude(e => e.Tag)
-                    .ToList();
-            return posts;
+                   .ThenInclude(e => e.Tag)
+                   .OrderByDescending(p => p.CreatedOn)
+                   .AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(p => p.PostTags.Any(pt => pt.Tag.Text == searchString));
+            }
+
+            return query.ToList();
+
         }
 
-        public IEnumerable<Post> GetPage(int pageNumber, int pageSize)
+        public IEnumerable<Post> GetPage(int pageNumber, int pageSize, string searchString)
         {
-            var posts = _context.Posts
+            var query = _context.Posts
                .Include(p => p.Image)
                .Include(p => p.User)
                .Include(p => p.Comments)
                .Include(e => e.PostTags)
-                   .ThenInclude(e => e.Tag)
-                   .Skip(pageNumber * pageSize)
-                   .Take(pageSize)
-                   .ToList();
+                  .ThenInclude(e => e.Tag).AsQueryable()
+                  .OrderByDescending(p => p.CreatedOn)
+                   .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize);
 
-            return posts;
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(p => p.PostTags.Any(pt => pt.Tag.Text == searchString));
+            }
+
+            return query.ToList();
+
         }
 
         public bool UserExists(Guid userId)
@@ -152,6 +198,6 @@ namespace Code9Insta.API.Infrastructure.Repository
             return (_context.SaveChanges() >= 0);
         }
 
-       
+
     }
 }

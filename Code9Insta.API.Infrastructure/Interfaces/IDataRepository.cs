@@ -8,15 +8,16 @@ namespace Code9Insta.API.Infrastructure.Interfaces
 {
     public interface IDataRepository
     {
-        IEnumerable<Post> GetPosts();
-        IEnumerable<Post> GetPage(int pageNumber, int pageSize);
+        IEnumerable<Post> GetPosts(string searchString);
+        IEnumerable<Post> GetPage(int pageNumber, int pageSize, string searchString);
         bool UserExists(Guid userId);
         bool PostExists(Guid userId);
-        void AddPostForUser(Guid userId, PostDto post);
+        void CreatePost(Guid userId, PostDto post);
         void DeletePost(Post postId);
 
         bool Save();
         Post GetPostForUser(Guid userId, Guid id);
+        IEnumerable<Post> GetPostsForUser(Guid userId);
         Post GetPostById(Guid id);
         void ReactToPost(Post post, Guid userId);
         void EditPost(Post post, string description, string[] tags);

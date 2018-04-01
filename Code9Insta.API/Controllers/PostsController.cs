@@ -6,7 +6,7 @@ using Code9Insta.API.Core.DTO;
 using Code9Insta.API.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-
+using Code9Insta.API.Infrastructure.Entities;
 
 namespace Code9Insta.API.Controllers
 {
@@ -23,19 +23,20 @@ namespace Code9Insta.API.Controllers
         // GET: api/Posts
         [HttpGet]
         [Route("GetAll")]
-        public IActionResult GetAllPosts()
+        public IActionResult GetAllPosts(string searchString)
         {
-            var posts = _repository.GetPosts();
-         
+            var posts = _repository.GetPosts(searchString);
+
+
             var result = AutoMapper.Mapper.Map<IEnumerable<PostDto>>(posts);
 
             return Ok(result);
         }
 
         [HttpGet]
-        public IActionResult Get(int pageNumber = 1, int pageSize = 10)
+        public IActionResult Get(int pageNumber = 1, int pageSize = 10, string searchString = null)
         {
-            var posts = _repository.GetPage(pageNumber, pageSize);
+            var posts = _repository.GetPage(pageNumber, pageSize, searchString);
 
             var result = AutoMapper.Mapper.Map<IEnumerable<PostDto>>(posts);
 
@@ -89,7 +90,7 @@ namespace Code9Insta.API.Controllers
                 post.ImageData = memoryStream.ToArray();
             }
 
-            _repository.AddPostForUser(model.UserId, post);
+            _repository.CreatePost(model.UserId, post);
 
             if(!_repository.Save())
             {

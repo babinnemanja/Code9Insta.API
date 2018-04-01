@@ -12,14 +12,14 @@ using Microsoft.IdentityModel.Tokens;
 namespace Code9Insta.API.Controllers
 {
     [Route("api/[controller]")]
-    public class TokensController : Controller
+    public class TokenController : Controller
     {
         private readonly IValidateRepository _validateRepository;
         private readonly IProfileRepository _profileRepository;
         private readonly IConfiguration _configuration;
         private readonly IPasswordManager _passwordManager;
 
-        public TokensController(IValidateRepository validateRepository, IConfiguration configuration, IProfileRepository profileRepository, IPasswordManager passwordManager)
+        public TokenController(IValidateRepository validateRepository, IConfiguration configuration, IProfileRepository profileRepository, IPasswordManager passwordManager)
         {
             _validateRepository = validateRepository;
             _profileRepository = profileRepository;
@@ -28,7 +28,7 @@ namespace Code9Insta.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpGet]
         public IActionResult RequestToken(string userName, string password)
         {
             //hash pasword

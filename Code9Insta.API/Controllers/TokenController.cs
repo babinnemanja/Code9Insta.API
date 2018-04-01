@@ -11,53 +11,83 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Code9Insta.API.Controllers
 {
+    [AllowAnonymous]
     [Route("api/[controller]")]
     public class TokenController : Controller
     {
         private readonly IValidateRepository _validateRepository;
         private readonly IProfileRepository _profileRepository;
-        private readonly IConfiguration _configuration;
-        private readonly IPasswordManager _passwordManager;
+        private readonly IAuthorizationManager _authorizationManager;
+        private readonly SymmetricSecurityKey _key;
 
-        public TokenController(IValidateRepository validateRepository, IConfiguration configuration, IProfileRepository profileRepository, IPasswordManager passwordManager)
+        public TokenController(IValidateRepository validateRepository, IConfiguration configuration, IProfileRepository profileRepository, IAuthorizationManager authorizationManager)
         {
             _validateRepository = validateRepository;
             _profileRepository = profileRepository;
-            _configuration = configuration;
-            _passwordManager = passwordManager;
+            _authorizationManager = authorizationManager;
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["SecretKey"]));
         }
 
-        [AllowAnonymous]
+        [Route("Request")]
         [HttpGet]
         public IActionResult RequestToken(string userName, string password)
         {
             //hash pasword
             var salt = _profileRepository.GetSaltByUserName(userName);
-            var passwordHash = _passwordManager.GetPasswordHash(password, salt);
+            var passwordHash = _authorizationManager.GeneratePasswordHash(password, salt);
 
             if (!_validateRepository.ValidateLogin(userName, passwordHash))
                 return BadRequest("Could not verify username and password");
+
+            var refreshToken = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+
+            _validateRepository.SaveRefreshToken(userName, refreshToken);
+
+            if (!_validateRepository.Save())
+            {
+                return StatusCode(500, "There was a problem while handling your request.");
+            }
+
+            var token = _authorizationManager.GenerateToken(_key, userName);
+
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                refreshToken
+            });
+
+        }
+
+        [Route("Refresh")]
+        [HttpGet]
+        public IActionResult RefreshToken(Guid userId, string refreshToken)
+        {
+            if (!_validateRepository.ValidateRefrashToken(userId, refreshToken))
+                return BadRequest("Could not verify refresh token");
+
+            var userName = _profileRepository.GetUserNameById(userId);
+
+            var newRefreshToken = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+
+            _validateRepository.SaveRefreshToken(userName, newRefreshToken);
+         
+            if (!_validateRepository.Save())
+            {
+                return StatusCode(500, "There was a problem while handling your request.");
+            }
 
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, userName)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SecretKey"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: "code9.com",
-                audience: "code9.com",
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
-                signingCredentials: creds);
+            var token = _authorizationManager.GenerateToken(_key, userName);
 
             return Ok(new
             {
-                token = new JwtSecurityTokenHandler().WriteToken(token)
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                refreshToken = newRefreshToken
             });
-
         }
     }
 }

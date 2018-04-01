@@ -10,5 +10,6 @@ namespace Code9Insta.API.Infrastructure.Interfaces
         void CreateProfile(Profile profile);
         Profile GetProfile(Guid profileId);
         byte[] GetSaltByUserName(string userName);
+        string GetUserNameById(Guid userId);
     }
 }

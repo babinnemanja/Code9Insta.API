@@ -9,18 +9,19 @@ using System;
 
 namespace Code9Insta.API.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     public class ProfileController : Controller
     {
         private readonly IProfileRepository _profileRepository;
         private readonly IValidateRepository _validateRepository;
-        private readonly IPasswordManager _passwordManager;
+        private readonly IAuthorizationManager _authorizationManager;
 
-        public ProfileController(IProfileRepository profileRepository, IValidateRepository validateRepository, IPasswordManager passwordManager)
+        public ProfileController(IProfileRepository profileRepository, IValidateRepository validateRepository, IAuthorizationManager authorizationManager)
         {
             _profileRepository = profileRepository;
             _validateRepository = validateRepository;
-            _passwordManager = passwordManager;
+            _authorizationManager = authorizationManager;
         }
 
         [AllowAnonymous]
@@ -35,7 +36,7 @@ namespace Code9Insta.API.Controllers
             var prof = AutoMapper.Mapper.Map<Profile>(profile);
             var salt = new byte[128 / 8];
 
-            prof.User.PasswordHash = _passwordManager.GetPasswordHash(profile.User.Password, salt);
+            prof.User.PasswordHash = _authorizationManager.GeneratePasswordHash(profile.User.Password, salt);
             prof.User.Salt = salt;
 
             _profileRepository.CreateProfile(prof);
@@ -47,8 +48,7 @@ namespace Code9Insta.API.Controllers
 
             return StatusCode(200, "Profile created");
         }
-
-        [AllowAnonymous]
+       
         [HttpGet("{profileId}")]
         public IActionResult GetProfile(Guid profileId)
         {

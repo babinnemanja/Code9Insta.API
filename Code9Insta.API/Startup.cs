@@ -55,7 +55,7 @@ namespace Code9Insta.API
                         ValidIssuer = "code9.com",
                         ValidAudience = "code9.com",
                         IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(Configuration["SecurityKey"]))
+                            Encoding.UTF8.GetBytes(Configuration["SecretKey"]))
                     };
                 });
 
@@ -65,7 +65,7 @@ namespace Code9Insta.API
             services.AddScoped<IProfileRepository, ProfileRepository>();
 
             //register helpers
-            services.AddScoped<IPasswordManager, PasswordManager>();
+            services.AddScoped<IAuthorizationManager, AuthorizationManager>();
 
             //AutoMapper configuration
             AutoMapper.Mapper.Initialize(conf =>

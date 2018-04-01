@@ -32,6 +32,11 @@ namespace Code9Insta.API.Infrastructure.Repository
             return _context.Users.FirstOrDefault(f => f.UserName == userName).Salt;
         }
 
+        public string GetUserNameById(Guid userId)
+        {
+            return _context.Users.FirstOrDefault(f => f.Id == userId).UserName;
+        }
+
         public bool Save()
         {
             return (_context.SaveChanges() >= 0);

@@ -13,7 +13,7 @@ namespace Code9Insta.API.Infrastructure.Interfaces
         bool UserExists(Guid userId);
         bool PostExists(Guid userId);
         void CreatePost(Guid userId, PostDto post);
-        void DeletePost(Post postId);
+        void DeletePost(Post post);
 
         bool Save();
         Post GetPostForUser(Guid userId, Guid id);
@@ -21,5 +21,8 @@ namespace Code9Insta.API.Infrastructure.Interfaces
         Post GetPostById(Guid id);
         void ReactToPost(Post post, Guid userId);
         void EditPost(Post post, string description, string[] tags);
+        void CreateComment(Comment comment);
+        void DeleteComment(Comment comment);
+        Comment GetCommentById(Guid commentId);
     }
 }

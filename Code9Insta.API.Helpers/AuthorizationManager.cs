@@ -26,13 +26,14 @@ namespace Code9Insta.API.Helpers
             return hashed;
         }
 
-        public JwtSecurityToken GenerateToken(SymmetricSecurityKey key, string userName)
+        public JwtSecurityToken GenerateToken(SymmetricSecurityKey key, string userName, Guid userId)
         {
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, userName)
+                new Claim(ClaimTypes.Name, userName),
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString())
             };
 
             var token = new JwtSecurityToken(

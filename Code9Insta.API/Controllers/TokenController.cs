@@ -32,6 +32,11 @@ namespace Code9Insta.API.Controllers
         [HttpGet]
         public IActionResult RequestToken(string userName, string password)
         {
+            var userId = _profileRepository.GetUserIdByUserName(userName);
+
+            if (userId == null || userId == Guid.Empty)
+                return NotFound();
+
             //hash pasword
             var salt = _profileRepository.GetSaltByUserName(userName);
             var passwordHash = _authorizationManager.GeneratePasswordHash(password, salt);
@@ -48,7 +53,7 @@ namespace Code9Insta.API.Controllers
                 return StatusCode(500, "There was a problem while handling your request.");
             }
 
-            var token = _authorizationManager.GenerateToken(_key, userName);
+            var token = _authorizationManager.GenerateToken(_key, userName, userId);
 
             return Ok(new
             {
@@ -65,23 +70,18 @@ namespace Code9Insta.API.Controllers
             if (!_validateRepository.ValidateRefrashToken(userId, refreshToken))
                 return BadRequest("Could not verify refresh token");
 
-            var userName = _profileRepository.GetUserNameById(userId);
+            var userInfo = _profileRepository.GetUserInfo(userId);
 
             var newRefreshToken = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
 
-            _validateRepository.SaveRefreshToken(userName, newRefreshToken);
+            _validateRepository.SaveRefreshToken(userInfo.UserName, newRefreshToken);
          
             if (!_validateRepository.Save())
             {
                 return StatusCode(500, "There was a problem while handling your request.");
             }
 
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.Name, userName)
-            };
-
-            var token = _authorizationManager.GenerateToken(_key, userName);
+            var token = _authorizationManager.GenerateToken(_key, userInfo.UserName, userInfo.Id);
 
             return Ok(new
             {

@@ -193,6 +193,21 @@ namespace Code9Insta.API.Infrastructure.Repository
             return _context.Posts.Any(u => u.Id == postId);
         }
 
+        public void CreateComment(Comment comment)
+        {
+            _context.Comments.Add(comment);
+        }
+
+        public Comment GetCommentById(Guid commentId)
+        {
+            return _context.Comments.FirstOrDefault(f => f.Id == commentId);
+        }
+
+        public void DeleteComment(Comment comment)
+        {
+            _context.Remove(comment);
+        }
+
         public bool Save()
         {
             return (_context.SaveChanges() >= 0);

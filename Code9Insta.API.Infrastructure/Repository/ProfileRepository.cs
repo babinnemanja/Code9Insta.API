@@ -2,7 +2,6 @@
 using Code9Insta.API.Infrastructure.Entities;
 using Code9Insta.API.Infrastructure.Identity;
 using Code9Insta.API.Infrastructure.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
@@ -32,9 +31,14 @@ namespace Code9Insta.API.Infrastructure.Repository
             return _context.Users.FirstOrDefault(f => f.UserName == userName).Salt;
         }
 
-        public string GetUserNameById(Guid userId)
+        public ApplicationUser GetUserInfo(Guid userId)
         {
-            return _context.Users.FirstOrDefault(f => f.Id == userId).UserName;
+            return _context.Users.FirstOrDefault(f => f.Id == userId);
+        }
+
+        public Guid GetUserIdByUserName(string userName)
+        {
+            return _context.Users.FirstOrDefault(f => f.UserName == userName).Id;
         }
 
         public bool Save()

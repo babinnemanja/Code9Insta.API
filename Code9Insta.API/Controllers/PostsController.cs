@@ -6,10 +6,14 @@ using Code9Insta.API.Core.DTO;
 using Code9Insta.API.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using Code9Insta.API.Infrastructure.Entities;
+using Microsoft.AspNetCore.Http;
+using Code9Insta.API.Helpers;
+using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Code9Insta.API.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Produces("application/json")]
     [Route("api/Posts")]
     public class PostsController : Controller
@@ -52,9 +56,15 @@ namespace Code9Insta.API.Controllers
             {
                 return NotFound();
             }
-            
-            //ToDo - calculate if post is liked by the current user
+
+            var userId = Guid.Parse(HttpContext.User.GetUserId());
             var postDto = AutoMapper.Mapper.Map<PostDto>(post);
+
+            if(post.UserLikes.SingleOrDefault(ul => ul.UserId == userId) != null)
+            {
+                postDto.IsLikedByUser = true;
+            }
+
             return Ok(postDto);
         }
         
@@ -72,14 +82,11 @@ namespace Code9Insta.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (!_repository.UserExists(model.UserId))
-            {
-                return NotFound();
-            }
+            var userId = Guid.Parse(HttpContext.User.GetUserId());
 
             var post = new PostDto
             {
-                UserId = model.UserId,
+                UserId = userId,
                 Tags = model.Tags,
                 Description = model.Description                
             };
@@ -90,7 +97,7 @@ namespace Code9Insta.API.Controllers
                 post.ImageData = memoryStream.ToArray();
             }
 
-            _repository.CreatePost(model.UserId, post);
+            _repository.CreatePost(userId, post);
 
             if(!_repository.Save())
             {
@@ -99,7 +106,7 @@ namespace Code9Insta.API.Controllers
 
 
             return CreatedAtRoute("GetPost",
-                new { userId = model.UserId, id = post.Id },
+                new { userId = userId, id = post.Id },
                 post);
 
         }
@@ -118,12 +125,9 @@ namespace Code9Insta.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (!_repository.UserExists(model.UserId))
-            {
-                return NotFound();
-            }
+            var userId = Guid.Parse(HttpContext.User.GetUserId());
 
-            var post = _repository.GetPostById(id);
+            var post = _repository.GetPostForUser(userId, id);
             if (post == null)
             {
                 return NotFound();
@@ -169,12 +173,9 @@ namespace Code9Insta.API.Controllers
        
         // DELETE: api/Posts/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid userId, Guid id)
+        public IActionResult Delete(Guid id)
         {
-            if (!_repository.UserExists(userId))
-            {
-                return NotFound();
-            }
+            var userId = Guid.Parse(HttpContext.User.GetUserId());
 
             var post = _repository.GetPostForUser(userId, id);
             if (post == null)

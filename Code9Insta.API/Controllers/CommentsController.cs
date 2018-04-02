@@ -24,7 +24,7 @@ namespace Code9Insta.API.Controllers
         public IActionResult CreateComment(Guid postId, string text)
         {
             if (!_repository.PostExists(postId))
-                return BadRequest("Post dose not exist");
+                return BadRequest("Post does not exist");
 
             var userId = Guid.Parse(HttpContext.User.GetUserId());
 
@@ -51,7 +51,7 @@ namespace Code9Insta.API.Controllers
             var comment = _repository.GetCommentById(commentId);
 
             if (comment == null)
-                return BadRequest("Comment dose not exist");
+                return BadRequest("Comment does not exist");
 
             _repository.DeleteComment(comment);
 

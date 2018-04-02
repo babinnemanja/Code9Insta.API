@@ -8,7 +8,6 @@ namespace Code9Insta.API.ViewModels
     {
         [Required]
         public IFormFile Image { get; set; }
-        public Guid UserId { get; set; }
         public string[] Tags { get; set; }
         public string Description { get; set; }
     }

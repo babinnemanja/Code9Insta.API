@@ -70,7 +70,7 @@ namespace Code9Insta.API
             //AutoMapper configuration
             AutoMapper.Mapper.Initialize(conf =>
             {
-                conf.CreateMap<ProfileDto, Profile>();
+                conf.CreateMap<CreateProfileDto, Profile>();
                 conf.CreateMap<AccountDto, ApplicationUser>();
                 conf.CreateMap<Post, PostDto>()
                   .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.User.UserName))
@@ -79,6 +79,10 @@ namespace Code9Insta.API
                   .ForMember(dest => dest.Tags, opt => opt.MapFrom(src =>
                     src.PostTags.Select(pt => pt.Tag.Text).ToList()));
                 conf.CreateMap<CommentDto, Comment>();
+                conf.CreateMap<Profile, GetProfileDto>()
+                    .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
+                    .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+                    .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User.Id));
             });
 
             services.AddMvc();

@@ -3,6 +3,7 @@ using Code9Insta.API.Infrastructure.Entities;
 using Code9Insta.API.Infrastructure.Identity;
 using Code9Insta.API.Infrastructure.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Code9Insta.API.Infrastructure.Repository
@@ -39,6 +40,21 @@ namespace Code9Insta.API.Infrastructure.Repository
         public Guid GetUserIdByUserName(string userName)
         {
             return _context.Users.FirstOrDefault(f => f.UserName == userName).Id;
+        }
+
+        public Guid GetProfileIdByUserId(Guid userId)
+        {
+            return _context.Users.FirstOrDefault(f => f.Id == userId).Id;
+        }
+
+        public Profile GetProfileByHandle(string handle)
+        {
+            return _context.Profiles.FirstOrDefault(f => f.Handle == handle);
+        }
+
+        public List<Profile> GetAllProfiles()
+        {
+            return _context.Profiles.ToList();
         }
 
         public bool Save()

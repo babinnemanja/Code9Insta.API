@@ -1,7 +1,7 @@
 ﻿using Code9Insta.API.Core.DTO;
+using Code9Insta.API.Helpers;
 using Code9Insta.API.Helpers.Interfaces;
 using Code9Insta.API.Infrastructure.Entities;
-using Code9Insta.API.Infrastructure.Identity;
 using Code9Insta.API.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +26,7 @@ namespace Code9Insta.API.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult CreateProfile([FromBody]ProfileDto profile)
+        public IActionResult CreateProfile([FromBody]CreateProfileDto profile)
         {
             if(!_validateRepository.IsUserNameHandleUnique(profile.User.UserName, profile.Handle))
             {
@@ -49,9 +49,12 @@ namespace Code9Insta.API.Controllers
             return StatusCode(200, "Profile created");
         }
        
-        [HttpGet("{profileId}")]
-        public IActionResult GetProfile(Guid profileId)
+        [HttpGet]
+        public IActionResult GetProfile()
         {
+            var userId = Guid.Parse(HttpContext.User.GetUserId());
+            var profileId = _profileRepository.GetProfileIdByUserId(userId);
+
             var profile = _profileRepository.GetProfile(profileId);
 
             if (profile == null)
@@ -59,7 +62,40 @@ namespace Code9Insta.API.Controllers
                 return NotFound();
             }
 
-            var profileDto = AutoMapper.Mapper.Map<ProfileDto>(profile);
+            var profileDto = AutoMapper.Mapper.Map<GetProfileDto>(profile);
+
+            return Ok(profileDto);
+        }
+
+        [HttpGet("{handle}")]
+        public IActionResult GetProfileByHandle(string handle)
+        {
+            var profile = _profileRepository.GetProfileByHandle(handle);
+
+
+            if (profile == null)
+            {
+                return NotFound();
+            }
+
+            var profileDto = AutoMapper.Mapper.Map<GetProfileDto>(profile);
+
+            return Ok(profileDto);
+        }
+
+        [HttpGet]
+        [Route("All")]
+        public IActionResult GetProfileAllProfiles()
+        {
+            
+            var profile = _profileRepository.GetAllProfiles();
+
+            if (profile == null)
+            {
+                return NotFound();
+            }
+
+            var profileDto = AutoMapper.Mapper.Map<GetProfileDto>(profile);
 
             return Ok(profileDto);
         }

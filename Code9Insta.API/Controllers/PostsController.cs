@@ -70,7 +70,7 @@ namespace Code9Insta.API.Controllers
         
         // POST: api/Posts
         [HttpPost]
-        public async Task<IActionResult> Post(CreatePostViewModel model)
+        public async Task<IActionResult> Post(CreatePostDto model)
         {
             if(model == null)
             {
@@ -113,7 +113,7 @@ namespace Code9Insta.API.Controllers
 
         [HttpPut("{id}", Name = "EditPost")]
         [Route("{id}")]
-        public IActionResult Edit(EditPostViewModel model, Guid id)
+        public IActionResult Edit(EditPostDto model, Guid id)
         {
             if (model == null)
             {

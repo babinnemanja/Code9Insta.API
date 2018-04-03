@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Code9Insta.API.ViewModels
 {
-    public class CreatePostViewModel
+    public class CreatePostDto
     {
         [Required]
         public IFormFile Image { get; set; }

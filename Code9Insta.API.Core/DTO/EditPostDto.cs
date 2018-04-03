@@ -1,9 +1,8 @@
-﻿using System;
+﻿
 
-
-namespace Code9Insta.API.ViewModels
+namespace Code9Insta.API.Core.DTO
 {
-    public class EditPostViewModel
+    public class EditPostDto
     {        
         public string[] Tags { get; set; }
         public string Description { get; set; }

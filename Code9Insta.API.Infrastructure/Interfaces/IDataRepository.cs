@@ -2,7 +2,6 @@
 using Code9Insta.API.Infrastructure.Entities;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Code9Insta.API.Infrastructure.Interfaces
 {
@@ -12,7 +11,7 @@ namespace Code9Insta.API.Infrastructure.Interfaces
         IEnumerable<Post> GetPage(int pageNumber, int pageSize, string searchString);
         bool UserExists(Guid userId);
         bool PostExists(Guid userId);
-        void CreatePost(Guid userId, PostDto post);
+        void CreatePost(Guid userId, CreatePostDto post);
         void DeletePost(Post post);
 
         bool Save();

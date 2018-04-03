@@ -3,7 +3,6 @@ using Code9Insta.API.Infrastructure.Interfaces;
 using System.IO;
 using System.Threading.Tasks;
 using Code9Insta.API.Core.DTO;
-using Code9Insta.API.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
@@ -70,7 +69,7 @@ namespace Code9Insta.API.Controllers
         
         // POST: api/Posts
         [HttpPost]
-        public async Task<IActionResult> Post(CreatePostViewModel model)
+        public IActionResult Post(CreatePostDto model)
         {
             if(model == null)
             {
@@ -83,21 +82,8 @@ namespace Code9Insta.API.Controllers
             }
 
             var userId = Guid.Parse(HttpContext.User.GetUserId());
-
-            var post = new PostDto
-            {
-                UserId = userId,
-                Tags = model.Tags,
-                Description = model.Description                
-            };
-
-            using (var memoryStream = new MemoryStream())
-            {
-                await model.Image.CopyToAsync(memoryStream);
-                post.ImageData = memoryStream.ToArray();
-            }
-
-            _repository.CreatePost(userId, post);
+                 
+            _repository.CreatePost(userId, model);
 
             if(!_repository.Save())
             {
@@ -105,15 +91,13 @@ namespace Code9Insta.API.Controllers
             }
 
 
-            return CreatedAtRoute("GetPost",
-                new { userId = userId, id = post.Id },
-                post);
+            return StatusCode(200, "Post created");
 
         }
 
         [HttpPut("{id}", Name = "EditPost")]
         [Route("{id}")]
-        public IActionResult Edit(EditPostViewModel model, Guid id)
+        public IActionResult Edit(EditPostDto model, Guid id)
         {
             if (model == null)
             {

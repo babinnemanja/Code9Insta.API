@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Code9Insta.API.Core.DTO;
 using Code9Insta.API.Infrastructure.Data;
@@ -18,17 +19,22 @@ namespace Code9Insta.API.Infrastructure.Repository
             _context = context;
         }
 
-        public void CreatePost(Guid userId, PostDto post)
+        public void CreatePost(Guid userId, CreatePostDto post)
         {
-            var image = new Image
-            {
-                Data = post.ImageData
-            };
 
+            var image = new Image();
+
+            using (var memoryStream = new MemoryStream())
+            {
+                post.Image.CopyToAsync(memoryStream);
+                image.Data = memoryStream.ToArray();
+            }
+
+           
             var newPost = new Post
             {
                 Image = image,
-                UserId = post.UserId,
+                UserId = userId,
                 CreatedOn = DateTime.UtcNow,
                 Description = post.Description,
                 PostTags = new List<PostTag>(),

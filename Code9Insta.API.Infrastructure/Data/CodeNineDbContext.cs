@@ -40,7 +40,12 @@ namespace Code9Insta.API.Infrastructure.Data
             builder.Entity<PostTag>()
                 .HasOne(pt => pt.Tag)
                 .WithMany(t => t.PostTags)
-                .HasForeignKey(pt => pt.TagId); 
+                .HasForeignKey(pt => pt.TagId);
+
+            builder.Entity<Profile>()
+               .HasOne(ap => ap.User)
+               .WithOne(p => p.Profile)
+               .HasForeignKey<Profile>(ap => ap.UserId);
         }
 
     }

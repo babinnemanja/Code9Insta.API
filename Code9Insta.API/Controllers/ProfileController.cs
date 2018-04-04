@@ -36,6 +36,9 @@ namespace Code9Insta.API.Controllers
             var prof = AutoMapper.Mapper.Map<Profile>(profile);
             var salt = new byte[128 / 8];
 
+            Random random = new Random();
+            random.NextBytes(salt);
+
             prof.User.PasswordHash = _authorizationManager.GeneratePasswordHash(profile.User.Password, salt);
             prof.User.Salt = salt;
 
@@ -53,9 +56,8 @@ namespace Code9Insta.API.Controllers
         public IActionResult GetProfile()
         {
             var userId = Guid.Parse(HttpContext.User.GetUserId());
-            var profileId = _profileRepository.GetProfileIdByUserId(userId);
 
-            var profile = _profileRepository.GetProfile(profileId);
+            var profile = _profileRepository.GetProfile(userId);
 
             if (profile == null)
             {

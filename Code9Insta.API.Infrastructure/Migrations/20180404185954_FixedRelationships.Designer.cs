@@ -11,9 +11,10 @@ using System;
 namespace Code9Insta.API.Infrastructure.Migrations
 {
     [DbContext(typeof(CodeNineDbContext))]
-    partial class CodeNineDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180404185954_FixedRelationships")]
+    partial class FixedRelationships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,15 +65,11 @@ namespace Code9Insta.API.Infrastructure.Migrations
 
                     b.Property<Guid>("ImageId");
 
-                    b.Property<Guid?>("ProfileId");
-
                     b.Property<Guid>("UserId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ImageId");
-
-                    b.HasIndex("ProfileId");
 
                     b.HasIndex("UserId");
 
@@ -315,12 +312,8 @@ namespace Code9Insta.API.Infrastructure.Migrations
                         .HasForeignKey("ImageId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Code9Insta.API.Infrastructure.Entities.Profile")
+                    b.HasOne("Code9Insta.API.Infrastructure.Entities.Profile", "Profile")
                         .WithMany("Posts")
-                        .HasForeignKey("ProfileId");
-
-                    b.HasOne("Code9Insta.API.Infrastructure.Identity.ApplicationUser", "User")
-                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

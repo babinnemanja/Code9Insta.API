@@ -5,6 +5,7 @@ using Code9Insta.API.Infrastructure.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Code9Insta.API.Infrastructure.Repository
 {
@@ -22,9 +23,9 @@ namespace Code9Insta.API.Infrastructure.Repository
             _context.Profiles.Add(profile);           
         }
 
-        public Profile GetProfile(Guid profileId)
+        public Profile GetProfile(Guid userId)
         {
-           return _context.Profiles.FirstOrDefault(f => f.Id == profileId);
+           return _context.Profiles.Include(i => i.User).FirstOrDefault(f => f.UserId == userId);
         }
 
         public byte[] GetSaltByUserName(string userName)
@@ -37,9 +38,9 @@ namespace Code9Insta.API.Infrastructure.Repository
             return _context.Users.FirstOrDefault(f => f.Id == userId);
         }
 
-        public Guid GetUserIdByUserName(string userName)
+        public Guid? GetUserIdByUserName(string userName)
         {
-            return _context.Users.FirstOrDefault(f => f.UserName == userName).Id;
+            return _context.Users.FirstOrDefault(f => f.UserName == userName)?.Id;
         }
 
         public Guid GetProfileIdByUserId(Guid userId)
@@ -49,12 +50,12 @@ namespace Code9Insta.API.Infrastructure.Repository
 
         public Profile GetProfileByHandle(string handle)
         {
-            return _context.Profiles.FirstOrDefault(f => f.Handle == handle);
+            return _context.Profiles.Include(i => i.User).FirstOrDefault(f => f.Handle == handle);
         }
 
         public List<Profile> GetAllProfiles()
         {
-            return _context.Profiles.ToList();
+            return _context.Profiles.Include(i => i.User).ToList();
         }
 
         public bool Save()

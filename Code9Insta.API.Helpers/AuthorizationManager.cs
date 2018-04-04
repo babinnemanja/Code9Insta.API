@@ -26,7 +26,7 @@ namespace Code9Insta.API.Helpers
             return hashed;
         }
 
-        public JwtSecurityToken GenerateToken(SymmetricSecurityKey key, string userName, Guid userId)
+        public JwtSecurityToken GenerateToken(SymmetricSecurityKey key, string userName, Guid? userId)
         {
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

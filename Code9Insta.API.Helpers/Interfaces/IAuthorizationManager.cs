@@ -8,6 +8,6 @@ namespace Code9Insta.API.Helpers.Interfaces
     public interface IAuthorizationManager
     {
         string GeneratePasswordHash(string password, byte[] salt);
-        JwtSecurityToken GenerateToken(SymmetricSecurityKey key, string userName, Guid userId);
+        JwtSecurityToken GenerateToken(SymmetricSecurityKey key, string userName, Guid? userId);
     }
 }

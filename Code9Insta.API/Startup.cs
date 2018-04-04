@@ -80,9 +80,9 @@ namespace Code9Insta.API
                     src.PostTags.Select(pt => pt.Tag.Text).ToList()));
                 conf.CreateMap<CommentDto, Comment>();
                 conf.CreateMap<Profile, GetProfileDto>()
+                    .ForMember(dest => dest.ProfileId, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
-                    .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
-                    .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User.Id));
+                    .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
             });
 
             services.AddMvc();

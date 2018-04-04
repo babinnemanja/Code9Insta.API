@@ -11,9 +11,10 @@ using System;
 namespace Code9Insta.API.Infrastructure.Migrations
 {
     [DbContext(typeof(CodeNineDbContext))]
-    partial class CodeNineDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180404184352_ChangesToRelationships")]
+    partial class ChangesToRelationships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,15 +65,11 @@ namespace Code9Insta.API.Infrastructure.Migrations
 
                     b.Property<Guid>("ImageId");
 
-                    b.Property<Guid?>("ProfileId");
-
                     b.Property<Guid>("UserId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ImageId");
-
-                    b.HasIndex("ProfileId");
 
                     b.HasIndex("UserId");
 
@@ -105,9 +102,6 @@ namespace Code9Insta.API.Infrastructure.Migrations
                     b.Property<Guid>("UserId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("Profiles");
                 });
@@ -166,8 +160,7 @@ namespace Code9Insta.API.Infrastructure.Migrations
 
             modelBuilder.Entity("Code9Insta.API.Infrastructure.Identity.ApplicationUser", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<Guid>("Id");
 
                     b.Property<int>("AccessFailedCount");
 
@@ -315,12 +308,8 @@ namespace Code9Insta.API.Infrastructure.Migrations
                         .HasForeignKey("ImageId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Code9Insta.API.Infrastructure.Entities.Profile")
+                    b.HasOne("Code9Insta.API.Infrastructure.Entities.Profile", "Profile")
                         .WithMany("Posts")
-                        .HasForeignKey("ProfileId");
-
-                    b.HasOne("Code9Insta.API.Infrastructure.Identity.ApplicationUser", "User")
-                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -338,19 +327,19 @@ namespace Code9Insta.API.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Code9Insta.API.Infrastructure.Entities.Profile", b =>
-                {
-                    b.HasOne("Code9Insta.API.Infrastructure.Identity.ApplicationUser", "User")
-                        .WithOne("Profile")
-                        .HasForeignKey("Code9Insta.API.Infrastructure.Entities.Profile", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("Code9Insta.API.Infrastructure.Entities.UserLike", b =>
                 {
                     b.HasOne("Code9Insta.API.Infrastructure.Entities.Post", "Post")
                         .WithMany("UserLikes")
                         .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Code9Insta.API.Infrastructure.Identity.ApplicationUser", b =>
+                {
+                    b.HasOne("Code9Insta.API.Infrastructure.Entities.Profile", "Profile")
+                        .WithOne("User")
+                        .HasForeignKey("Code9Insta.API.Infrastructure.Identity.ApplicationUser", "Id")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

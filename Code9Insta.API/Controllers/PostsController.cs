@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Code9Insta.API.Helpers;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using Code9Insta.API.Infrastructure.Entities;
 
 namespace Code9Insta.API.Controllers
 {
@@ -30,10 +31,19 @@ namespace Code9Insta.API.Controllers
         {
             var userId = Guid.Parse(HttpContext.User.GetUserId());
 
-            var posts = _repository.GetPosts(searchString);
-          
-            var result = AutoMapper.Mapper.Map<IEnumerable<PostDto>>(posts);
-         
+            var posts = _repository.GetPosts(searchString).ToList();
+
+            var result = new List<PostDto>();
+
+            foreach(var item in posts)
+            {
+                var dto = AutoMapper.Mapper.Map<Post, PostDto>(item, opt =>
+                 opt.AfterMap((src, dest) => dest.IsLikedByUser = src.UserLikes.Any(x => x.UserId == userId)));
+
+                result.Add(dto);
+            }
+
+            
             return Ok(result);
         }
 
@@ -41,8 +51,17 @@ namespace Code9Insta.API.Controllers
         public IActionResult Get(int pageNumber = 1, int pageSize = 10, string searchString = null)
         {
             var posts = _repository.GetPage(pageNumber, pageSize, searchString);
+            var userId = Guid.Parse(HttpContext.User.GetUserId());
 
-            var result = AutoMapper.Mapper.Map<IEnumerable<PostDto>>(posts);
+            var result = new List<PostDto>();
+
+            foreach (var item in posts)
+            {
+                var dto = AutoMapper.Mapper.Map<Post, PostDto>(item, opt =>
+                 opt.AfterMap((src, dest) => dest.IsLikedByUser = src.UserLikes.Any(x => x.UserId == userId)));
+
+                result.Add(dto);
+            }
 
             return Ok(result);
         }
@@ -134,7 +153,7 @@ namespace Code9Insta.API.Controllers
         // PUT: api/Posts/5
         [HttpPut("{id}/reactToPost", Name ="ReactToPost")]
         [Route("{id}/reactToPost")]
-        public IActionResult Put(Guid userId, Guid id)
+        public IActionResult Put(Guid id)
         {
             var post = _repository.GetPostById(id);
             if (post == null)
@@ -143,8 +162,8 @@ namespace Code9Insta.API.Controllers
             }
             else
             {
-
-            _repository.ReactToPost(post, userId);
+                var userId = Guid.Parse(HttpContext.User.GetUserId());
+                _repository.ReactToPost(post, userId);
 
             }
             if (!_repository.Save())

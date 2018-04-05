@@ -25,14 +25,15 @@ namespace Code9Insta.API.Controllers
         }
         // GET: api/Posts
         [HttpGet]
-        [Route("GetAll")]
+        [Route("All")]
         public IActionResult GetAllPosts(string searchString)
         {
+            var userId = Guid.Parse(HttpContext.User.GetUserId());
+
             var posts = _repository.GetPosts(searchString);
-
-
+          
             var result = AutoMapper.Mapper.Map<IEnumerable<PostDto>>(posts);
-
+         
             return Ok(result);
         }
 

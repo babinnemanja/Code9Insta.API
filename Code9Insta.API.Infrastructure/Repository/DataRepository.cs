@@ -21,6 +21,7 @@ namespace Code9Insta.API.Infrastructure.Repository
 
         public void CreatePost(Guid userId, CreatePostDto post)
         {
+            var profile = _context.Profiles.SingleOrDefault(p => p.UserId == userId);
 
             var image = new Image();
 
@@ -33,8 +34,8 @@ namespace Code9Insta.API.Infrastructure.Repository
            
             var newPost = new Post
             {
-                Image = image,
-                UserId = userId,
+                Image = image,            
+                ProfileId = profile.Id,
                 CreatedOn = DateTime.UtcNow,
                 Description = post.Description,
                 PostTags = new List<PostTag>(),
@@ -94,17 +95,24 @@ namespace Code9Insta.API.Infrastructure.Repository
 
         public Post GetPostForUser(Guid userId, Guid id)
         {
-            return _context.Posts.SingleOrDefault(p => p.Id == id && p.UserId == userId);
+            return _context.Posts
+                .Include(p => p.Image)
+                .Include(p => p.UserLikes)
+                .Include(p => p.Profile)
+                .Include(p => p.Comments)
+                .Include(e => e.PostTags)
+                   .ThenInclude(e => e.Tag).SingleOrDefault(p => p.Id == id && p.Profile.UserId == userId);
         }
 
         public IEnumerable<Post> GetPostsForUser(Guid userId)
         {
-            return _context.Posts.Where(p => p.UserId == userId)
+            return _context.Posts.Where(p => p.Profile.UserId == userId)
                 .Include(p => p.Image)
-                .Include(p => p.User)
+                .Include(p => p.Profile)
                 .Include(p => p.Comments)
-                .Include(e => e.PostTags)
-                   .ThenInclude(e => e.Tag)
+                .Include(p => p.UserLikes)
+                .Include(p => p.PostTags)
+                   .ThenInclude(pt => pt.Tag)
                 .OrderByDescending(p => p.CreatedOn)
                 .ToList();
         }
@@ -114,10 +122,10 @@ namespace Code9Insta.API.Infrastructure.Repository
             return _context.Posts
                 .Include(p => p.Image)
                 .Include(p => p.UserLikes)
-                .Include(p => p.User)
+                .Include(p => p.Profile)
                 .Include(p => p.Comments)
-                .Include(e => e.PostTags)
-                    .ThenInclude(e => e.Tag)
+                .Include(p => p.PostTags)
+                   .ThenInclude(pt => pt.Tag)
                 .SingleOrDefault(p => p.Id == id);
         }
 
@@ -152,8 +160,9 @@ namespace Code9Insta.API.Infrastructure.Repository
         {
             var query = _context.Posts
                 .Include(p => p.Image)
-                .Include(p => p.User)
+                .Include(p => p.Profile)
                 .Include(p => p.Comments)
+                .Include(p => p.UserLikes)
                 .Include(e => e.PostTags)
                    .ThenInclude(e => e.Tag)
                    .OrderByDescending(p => p.CreatedOn)
@@ -172,8 +181,9 @@ namespace Code9Insta.API.Infrastructure.Repository
         {
             var query = _context.Posts
                .Include(p => p.Image)
-               .Include(p => p.User)
+               .Include(p => p.Profile)
                .Include(p => p.Comments)
+               .Include(p => p.UserLikes)
                .Include(e => e.PostTags)
                   .ThenInclude(e => e.Tag).AsQueryable()
                   .OrderByDescending(p => p.CreatedOn)

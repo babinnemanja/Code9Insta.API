@@ -6,7 +6,6 @@ namespace Code9Insta.API.Core.DTO
     public class PostDto
     {
         public Guid Id { get; set; }      
-        public Guid UserId { get; set; }
         public DateTime CreatedOn { get; set; }
         public int Likes { get; set; }
         public bool IsLikedByUser { get; set; }

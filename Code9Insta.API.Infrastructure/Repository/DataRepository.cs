@@ -24,14 +24,8 @@ namespace Code9Insta.API.Infrastructure.Repository
             var profile = _context.Profiles.SingleOrDefault(p => p.UserId == userId);
 
             var image = new Image();
-
-            using (var memoryStream = new MemoryStream())
-            {
-                post.Image.CopyToAsync(memoryStream);
-                image.Data = memoryStream.ToArray();
-            }
-
-           
+            image.Data = post.ImageData;
+     
             var newPost = new Post
             {
                 Image = image,            

@@ -89,7 +89,7 @@ namespace Code9Insta.API.Controllers
         
         // POST: api/Posts
         [HttpPost]
-        public IActionResult Post(CreatePostDto model)
+        public IActionResult Post([FromBody]CreatePostDto model)
         {
             if(model == null)
             {

@@ -36,19 +36,22 @@ namespace Code9Insta.API.Infrastructure.Repository
 
             };
 
-            foreach (var tag in post.Tags)
+            if(post.Tags != null)
             {
-                var newTag = new Tag
+                foreach (var tag in post.Tags)
                 {
-                    Text = tag
-                };
+                    var newTag = new Tag
+                    {
+                        Text = tag
+                    };
 
-                newPost.PostTags.Add(new PostTag
-                {
-                    Post = newPost,
-                    Tag = newTag
-                });
+                    newPost.PostTags.Add(new PostTag
+                    {
+                        Post = newPost,
+                        Tag = newTag
+                    });
 
+                }
             }
 
             _context.Posts.Add(newPost);

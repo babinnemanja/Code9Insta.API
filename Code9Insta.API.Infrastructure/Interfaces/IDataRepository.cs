@@ -23,5 +23,6 @@ namespace Code9Insta.API.Infrastructure.Interfaces
         void CreateComment(Comment comment);
         void DeleteComment(Comment comment);
         Comment GetCommentById(Guid commentId);
+        List<Comment> GetCommentsByPostId(Guid postId);
     }
 }

@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Code9Insta.API.Helpers;
 using System;
+using System.Collections.Generic;
+using Code9Insta.API.Core.DTO;
 
 namespace Code9Insta.API.Controllers
 {
@@ -31,7 +33,7 @@ namespace Code9Insta.API.Controllers
             var comment = new Comment
             {
                 PostId =  postId,
-                UserId = userId, // get from context
+                UserId = userId,
                 CreatedOn = DateTime.Now,
                 Text = text
             };
@@ -59,6 +61,18 @@ namespace Code9Insta.API.Controllers
                 return StatusCode(500, "There was a problem while handling your request.");
 
             return StatusCode(200, "Comment deleted");
+        }
+
+        [Route("GetPostComments")]
+        [HttpGet]
+        public IActionResult GetCommentsByPostId(Guid postId)
+        {
+            var comments = new List<Comment>();
+            comments = _repository.GetCommentsByPostId(postId);
+
+            var commentsDto = AutoMapper.Mapper.Map<List<GetCommentDto>>(comments);
+
+            return Ok(commentsDto);
         }
     }
 }

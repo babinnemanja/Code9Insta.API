@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Code9Insta.API.Core.DTO;
 using Code9Insta.API.Infrastructure.Data;
@@ -219,6 +218,11 @@ namespace Code9Insta.API.Infrastructure.Repository
         public void DeleteComment(Comment comment)
         {
             _context.Remove(comment);
+        }
+
+        public List<Comment> GetCommentsByPostId(Guid postId)
+        {
+            return _context.Posts.Where(w => w.Id == postId).SelectMany(s => s.Comments).ToList();
         }
 
         public bool Save()

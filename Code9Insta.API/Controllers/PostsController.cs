@@ -117,7 +117,7 @@ namespace Code9Insta.API.Controllers
 
         [HttpPut("{id}", Name = "EditPost")]
         [Route("{id}")]
-        public IActionResult Edit(EditPostDto model, Guid id)
+        public IActionResult Edit([FromBody]EditPostDto model, Guid id)
         {
             if (model == null)
             {

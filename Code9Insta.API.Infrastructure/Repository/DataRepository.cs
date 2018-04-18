@@ -63,28 +63,31 @@ namespace Code9Insta.API.Infrastructure.Repository
             post.Description = description;
 
             //clear removed tags
-            var tagsForRemoval = post.PostTags.Where(pt => tags.All(x => x != pt.Tag.Text)).ToList();
+            var tagsForRemoval = post.PostTags?.Where(pt => tags.All(x => x != pt.Tag.Text)).ToList();
 
             foreach (var item in tagsForRemoval)
             {
                 post.PostTags.Remove(item);
             }
 
-            //add new tags
-            foreach (var tag in tags)
+            if(tags != null)
             {
-                if (!post.PostTags.Any(t => t.Tag.Text == tag))
+                //add new tags
+                foreach (var tag in tags)
                 {
-                    var newTag = new Tag
+                    if (!post.PostTags.Any(t => t.Tag.Text == tag))
                     {
-                        Text = tag
-                    };
+                        var newTag = new Tag
+                        {
+                            Text = tag
+                        };
 
-                    post.PostTags.Add(new PostTag
-                    {
-                        Post = post,
-                        Tag = newTag
-                    });
+                        post.PostTags.Add(new PostTag
+                        {
+                            Post = post,
+                            Tag = newTag
+                        });
+                    }
                 }
             }
         }

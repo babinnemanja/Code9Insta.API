@@ -13,14 +13,14 @@ namespace Code9Insta.API.Controllers
 {
     [AllowAnonymous]
     [Route("api/[controller]")]
-    public class TokenController : Controller
+    public class TokensController : Controller
     {
         private readonly IValidateRepository _validateRepository;
         private readonly IProfileRepository _profileRepository;
         private readonly IAuthorizationManager _authorizationManager;
         private readonly SymmetricSecurityKey _key;
 
-        public TokenController(IValidateRepository validateRepository, IConfiguration configuration, IProfileRepository profileRepository, IAuthorizationManager authorizationManager)
+        public TokensController(IValidateRepository validateRepository, IConfiguration configuration, IProfileRepository profileRepository, IAuthorizationManager authorizationManager)
         {
             _validateRepository = validateRepository;
             _profileRepository = profileRepository;

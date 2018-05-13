@@ -11,13 +11,13 @@ namespace Code9Insta.API.Controllers
 {
     [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
-    public class ProfileController : Controller
+    public class ProfilesController : Controller
     {
         private readonly IProfileRepository _profileRepository;
         private readonly IValidateRepository _validateRepository;
         private readonly IAuthorizationManager _authorizationManager;
 
-        public ProfileController(IProfileRepository profileRepository, IValidateRepository validateRepository, IAuthorizationManager authorizationManager)
+        public ProfilesController(IProfileRepository profileRepository, IValidateRepository validateRepository, IAuthorizationManager authorizationManager)
         {
             _profileRepository = profileRepository;
             _validateRepository = validateRepository;

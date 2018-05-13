@@ -16,10 +16,12 @@ namespace Code9Insta.API.Controllers
     public class CommentsController : Controller
     {
         private IDataRepository _repository;
+        public Func<string> _getUserId; //For testing
 
         public CommentsController(IDataRepository repository)
         {
             _repository = repository;
+            _getUserId = () => HttpContext.User.GetUserId();
         }
 
         [HttpPost]
@@ -28,7 +30,7 @@ namespace Code9Insta.API.Controllers
             if (!_repository.PostExists(postId))
                 return BadRequest("Post does not exist");
 
-            var userId = Guid.Parse(HttpContext.User.GetUserId());
+            var userId = Guid.Parse(_getUserId.Invoke());
 
             var comment = new Comment
             {

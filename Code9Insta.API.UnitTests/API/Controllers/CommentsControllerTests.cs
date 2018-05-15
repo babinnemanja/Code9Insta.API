@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Web;
 using Xunit;
 using Code9Insta.API.Controllers;
 using Code9Insta.API.Infrastructure.Interfaces;
 using FakeItEasy;
 using Code9Insta.API.Infrastructure.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Principal;
-using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using AutoMapper;
 using Code9Insta.API.Core.DTO;
-using System.Threading.Tasks;
+
 
 namespace Code9Insta.API.UnitTests.API.Controllers
 {
@@ -23,15 +20,18 @@ namespace Code9Insta.API.UnitTests.API.Controllers
 
         public CommentsControllerTests()
         {
+            Mapper.Reset();
             Mapper.Initialize(conf =>
             {
-                conf.CreateMap<Comment, GetCommentDto>();
+                conf.CreateMap<Comment, GetCommentDto>()
+                .ForMember(dest => dest.Handle, opt => opt.MapFrom(src => src.Profile.Handle))
+                    .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Profile.UserId));
             });
         }
 
         [Fact]
         public void CreateCommentTest()
-        {
+        {        
             //arange
             var postId = Guid.NewGuid();
             var userId = new Guid("4ec8d89f-53d9-4cb2-b96e-2b2ec888faed");
@@ -83,7 +83,7 @@ namespace Code9Insta.API.UnitTests.API.Controllers
 
         [Fact]
         public void GetCommentsByPostIdTest()
-        {
+        {           
             //arange
             var postId = Guid.NewGuid();
 

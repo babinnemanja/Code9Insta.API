@@ -225,7 +225,7 @@ namespace Code9Insta.API.Infrastructure.Repository
 
         public List<Comment> GetCommentsByPostId(Guid postId)
         {
-            return _context.Posts.Where(w => w.Id == postId).SelectMany(s => s.Comments).ToList();
+            return _context.Posts.Where(w => w.Id == postId).SelectMany(s => s.Comments).Include(c => c.Profile).ToList();
         }
 
         public bool Save()

@@ -15,35 +15,48 @@ namespace Code9Insta.API.Controllers
     [Route("api/Comments")]
     public class CommentsController : Controller
     {
-        private IDataRepository _repository;
+        private IDataRepository _dataRepository;
+        private IProfileRepository _profileRepository;
         public Func<string> _getUserId; //For testing
 
-        public CommentsController(IDataRepository repository)
+        public CommentsController(IDataRepository dataRepository, IProfileRepository profileRepository)
         {
-            _repository = repository;
+            _dataRepository = dataRepository;
+            _profileRepository = profileRepository;
             _getUserId = () => HttpContext.User.GetUserId();
         }
 
         [HttpPost]
         public IActionResult CreateComment(Guid postId, string text)
         {
-            if (!_repository.PostExists(postId))
+            if (!_dataRepository.PostExists(postId))
+            {
                 return BadRequest("Post does not exist");
+            }
 
             var userId = Guid.Parse(_getUserId.Invoke());
+
+            var userProfileId = _profileRepository.GetProfileIdByUserId(userId);
+
+            if (userProfileId == null)
+            {
+                return BadRequest($"Profile for user with userId: {userId}  does not exist");
+            }
 
             var comment = new Comment
             {
                 PostId =  postId,
-                UserId = userId,
+                ProfileId = userProfileId.Value,
                 CreatedOn = DateTime.Now,
                 Text = text
             };
 
-            _repository.CreateComment(comment);
+            _dataRepository.CreateComment(comment);
 
-            if(!_repository.Save())
+            if(!_dataRepository.Save())
+            {
                 return StatusCode(500, "There was a problem while handling your request.");
+            }
 
             return StatusCode(200, "Comment created");
 
@@ -52,15 +65,19 @@ namespace Code9Insta.API.Controllers
         [HttpDelete]
         public IActionResult DeleteComment(Guid commentId)
         {
-            var comment = _repository.GetCommentById(commentId);
+            var comment = _dataRepository.GetCommentById(commentId);
 
             if (comment == null)
+            {
                 return BadRequest("Comment does not exist");
+            }
 
-            _repository.DeleteComment(comment);
+            _dataRepository.DeleteComment(comment);
 
-            if (!_repository.Save())
+            if (!_dataRepository.Save())
+            {
                 return StatusCode(500, "There was a problem while handling your request.");
+            }
 
             return StatusCode(200, "Comment deleted");
         }
@@ -70,7 +87,7 @@ namespace Code9Insta.API.Controllers
         public IActionResult GetCommentsByPostId(Guid postId)
         {
             var comments = new List<Comment>();
-            comments = _repository.GetCommentsByPostId(postId);
+            comments = _dataRepository.GetCommentsByPostId(postId);
 
             var commentsDto = AutoMapper.Mapper.Map<List<GetCommentDto>>(comments);
 

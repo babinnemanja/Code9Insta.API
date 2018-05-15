@@ -18,6 +18,7 @@ namespace Code9Insta.API.UnitTests.API.Controllers
     public class CommentsControllerTests
     {
         private readonly IDataRepository _dataRepository = A.Fake<IDataRepository>();
+        private readonly IProfileRepository _profileRepository = A.Fake<IProfileRepository>();
         private Func<string> _getUserIdFake = () => "4ec8d89f-53d9-4cb2-b96e-2b2ec888faed";
 
         public CommentsControllerTests()
@@ -33,11 +34,14 @@ namespace Code9Insta.API.UnitTests.API.Controllers
         {
             //arange
             var postId = Guid.NewGuid();
+            var userId = new Guid("4ec8d89f-53d9-4cb2-b96e-2b2ec888faed");
+            var profileId = Guid.NewGuid();
             var text = "This just a unit test";
 
-            var controller = new CommentsController(_dataRepository) { _getUserId = _getUserIdFake };
+            var controller = new CommentsController(_dataRepository, _profileRepository) { _getUserId = _getUserIdFake };
 
             A.CallTo(() => _dataRepository.PostExists(postId)).Returns(true);
+            A.CallTo(() => _profileRepository.GetProfileIdByUserId(userId)).Returns(profileId);
             A.CallTo(() => _dataRepository.Save()).Returns(true);
 
             //act
@@ -46,6 +50,7 @@ namespace Code9Insta.API.UnitTests.API.Controllers
 
             //assert
             A.CallTo(() => _dataRepository.PostExists(postId)).MustHaveHappened();
+            A.CallTo(() => _profileRepository.GetProfileIdByUserId(userId)).MustHaveHappened();
             A.CallTo(() => _dataRepository.CreateComment(A<Comment>.Ignored)).MustHaveHappened();
             A.CallTo(() => _dataRepository.Save()).MustHaveHappened();
             Assert.NotNull(okResult);
@@ -58,7 +63,7 @@ namespace Code9Insta.API.UnitTests.API.Controllers
             //arange
             var commentId = Guid.NewGuid();
 
-            var controller = new CommentsController(_dataRepository) { _getUserId = _getUserIdFake };
+            var controller = new CommentsController(_dataRepository, _profileRepository) { _getUserId = _getUserIdFake };
 
             A.CallTo(() => _dataRepository.GetCommentById(commentId)).Returns(new Comment());
             A.CallTo(() => _dataRepository.Save()).Returns(true);
@@ -82,15 +87,15 @@ namespace Code9Insta.API.UnitTests.API.Controllers
             //arange
             var postId = Guid.NewGuid();
 
-            var controller = new CommentsController(_dataRepository) { _getUserId = _getUserIdFake };
+            var controller = new CommentsController(_dataRepository, _profileRepository) { _getUserId = _getUserIdFake };
 
             var comments = new List<Comment>
             {
                 new Comment
                 {
-                    Id = Guid.NewGuid(), 
+                    Id = Guid.NewGuid(),
                     PostId = postId,
-                    UserId = Guid.NewGuid(),
+                    ProfileId = Guid.NewGuid(),
                     CreatedOn = DateTime.Now,
                     Text = "just a unit test"
                 }

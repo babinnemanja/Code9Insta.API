@@ -46,6 +46,9 @@ namespace Code9Insta.API.Infrastructure.Data
                .HasOne(ap => ap.User)
                .WithOne(p => p.Profile)
                .HasForeignKey<Profile>(ap => ap.UserId);
+
+            builder.Entity<Profile>().HasMany(p => p.Comments).WithOne(x => x.Profile).OnDelete(DeleteBehavior.Restrict);
+            //builder.Entity<Comment>().HasOne(c => c.Profile).WithOne().OnDelete(DeleteBehavior.Restrict)
         }
 
     }

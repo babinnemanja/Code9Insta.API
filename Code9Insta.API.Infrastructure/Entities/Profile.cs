@@ -14,6 +14,7 @@ namespace Code9Insta.API.Infrastructure.Entities
         public string Handle { get; set; }
 
         public ICollection<Post> Posts { get; set; }
+        public ICollection<Comment> Comments { get; set; }
         public ApplicationUser User { get; set; }
     }
 }

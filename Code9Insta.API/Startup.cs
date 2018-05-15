@@ -84,7 +84,9 @@ namespace Code9Insta.API
                     .ForMember(dest => dest.ProfileId, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
                     .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
-                conf.CreateMap<Comment, GetCommentDto>();
+                conf.CreateMap<Comment, GetCommentDto>()
+                    .ForMember(dest => dest.Handle, opt => opt.MapFrom(src => src.Profile.Handle))
+                    .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Profile.UserId));
             });
 
             services.AddMvc();

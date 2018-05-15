@@ -14,7 +14,7 @@ namespace Code9Insta.API.Infrastructure.Interfaces
         byte[] GetSaltByUserName(string userName);
         ApplicationUser GetUserInfo(Guid userId);
         Guid? GetUserIdByUserName(string userName);
-        Guid GetProfileIdByUserId(Guid userId);
+        Guid? GetProfileIdByUserId(Guid userId);
         Profile GetProfileByHandle(string handle);
         List<Profile> GetAllProfiles();
     }

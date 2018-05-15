@@ -43,9 +43,9 @@ namespace Code9Insta.API.Infrastructure.Repository
             return _context.Users.FirstOrDefault(f => f.UserName == userName)?.Id;
         }
 
-        public Guid GetProfileIdByUserId(Guid userId)
+        public Guid? GetProfileIdByUserId(Guid userId)
         {
-            return _context.Users.FirstOrDefault(f => f.Id == userId).Id;
+            return _context.Profiles.FirstOrDefault(f => f.UserId == userId)?.Id;
         }
 
         public Profile GetProfileByHandle(string handle)

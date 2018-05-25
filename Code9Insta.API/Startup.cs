@@ -89,6 +89,7 @@ namespace Code9Insta.API
                     .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Profile.UserId));
             });
 
+            services.AddCors();
             services.AddMvc();
         }
 
@@ -99,6 +100,11 @@ namespace Code9Insta.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
 
             app.UseAuthentication();
             app.UseMvc();
